@@ -1,4 +1,5 @@
 
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -15,21 +16,27 @@
         <div class="logo">Smart<span>Business</span></div>
 
         <nav>
-            <a href="#">Home</a>
+            <a href="index.html">Home</a>
             <a href="#services">Services</a>
-            <a href="#">About</a>
-            <a href="#">Contact</a>
+            <a href="#about">About</a>
+            <a href="#contact">Contact</a>
         </nav>
 
         <div class="buttons">
-            <button class="login" onclick="login()">Login</button>
-            <button class="signup" onclick="getStarted()">Get Started</button>
+            <button class="login" onclick="window.location.href='login.html'">
+                Login
+            </button>
+
+            <button class="signup" onclick="window.location.href='login.html'">
+                Get Started
+            </button>
         </div>
     </header>
 
     <main>
 
         <section class="hero">
+
             <span class="tag">SMART BUSINESS PLATFORM</span>
 
             <h1>
@@ -44,14 +51,17 @@
             </p>
 
             <div class="hero-buttons">
-                <button class="signup" onclick="getStarted()">
+
+                <button class="signup" onclick="window.location.href='login.html'">
                     Get Started
                 </button>
 
                 <button class="login" onclick="document.getElementById('services').scrollIntoView({behavior:'smooth'})">
                     Explore Services
                 </button>
+
             </div>
+
         </section>
 
         <section class="services" id="services">
@@ -87,6 +97,19 @@
 
             </div>
 
+        </section>
+
+        <section id="about">
+            <h2>About Smart Business</h2>
+            <p>
+                Smart Business helps companies manage
+                their activities from one platform.
+            </p>
+        </section>
+
+        <section id="contact">
+            <h2>Contact Us</h2>
+            <p>We are here to help your business grow.</p>
         </section>
 
     </main>
