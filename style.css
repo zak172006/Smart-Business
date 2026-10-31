@@ -144,3 +144,80 @@ body::after {
     right: 5%;
     z-index: -1;
 }
+
+.hero {
+    padding: 130px 15px 70px;
+}
+
+.tag {
+    display: inline-block;
+    color: #38bdf8;
+    border: 1px solid #2563eb;
+    padding: 9px 18px;
+    border-radius: 30px;
+    font-size: 12px;
+    margin-bottom: 25px;
+}
+
+.services {
+    width: 100%;
+    padding: 60px 15px;
+}
+
+.services h2 {
+    font-size: 32px;
+    margin-bottom: 15px;
+    color: #ffffff;
+}
+
+.services-text {
+    color: #aab6cc;
+    margin-bottom: 40px;
+}
+
+.service-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 25px;
+    max-width: 1100px;
+    margin: auto;
+}
+
+.service-card {
+    background: #111b31;
+    border: 1px solid #263754;
+    padding: 30px 20px;
+    border-radius: 16px;
+    transition: 0.3s;
+}
+
+.service-card:hover {
+    transform: translateY(-8px);
+    border-color: #38bdf8;
+}
+
+.service-icon {
+    font-size: 45px;
+    margin-bottom: 20px;
+}
+
+.service-card h3 {
+    color: #38bdf8;
+    margin-bottom: 15px;
+}
+
+.service-card p {
+    font-size: 14px;
+    margin-bottom: 20px;
+}
+
+.service-card a {
+    color: #818cf8;
+    text-decoration: none;
+}
+
+@media (max-width: 750px) {
+    .service-container {
+        grid-template-columns: 1fr;
+    }
+}
