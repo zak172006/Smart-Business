@@ -1,7 +1,7 @@
 
-<
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,70 +16,82 @@
 
         <nav>
             <a href="#">Home</a>
-            <a href="#">Services</a>
+            <a href="#services">Services</a>
             <a href="#">About</a>
             <a href="#">Contact</a>
         </nav>
 
         <div class="buttons">
             <button class="login" onclick="login()">Login</button>
-            <button class="signup">Get Started</button>
+            <button class="signup" onclick="getStarted()">Get Started</button>
         </div>
     </header>
 
-    
-<main>
-    <section class="hero">
-        <span class="tag">SMART BUSINESS PLATFORM</span>
+    <main>
 
-        <h1>Manage Your Business <br> The Smart Way</h1>
+        <section class="hero">
+            <span class="tag">SMART BUSINESS PLATFORM</span>
 
-        <p>
-            One Platform To Manage Your Business,
-            Products And Customers Easily.
-        </p>
+            <h1>
+                Manage Your Business
+                <br>
+                The Smart Way
+            </h1>
 
-        <div class="hero-buttons">
-            <button class="signup">Get Started</button>
-            <button class="login">Explore Services</button>
-        </div>
-    </section>
+            <p>
+                One Platform To Manage Your Business,
+                Products And Customers Easily.
+            </p>
 
-    <section class="services">
-        <h2>Explore Our Services</h2>
+            <div class="hero-buttons">
+                <button class="signup" onclick="getStarted()">
+                    Get Started
+                </button>
 
-        <p class="services-text">
-            Everything Your Business Needs In One Place
-        </p>
+                <button class="login" onclick="document.getElementById('services').scrollIntoView({behavior:'smooth'})">
+                    Explore Services
+                </button>
+            </div>
+        </section>
 
-        <div class="service-container">
+        <section class="services" id="services">
 
-            <div class="service-card">
-                <div class="service-icon">🍔</div>
-                <h3>Restaurants</h3>
-                <p>Manage menus, orders and customers easily.</p>
-                <a href="#">Explore More →</a>
+            <h2>Explore Our Services</h2>
+
+            <p class="services-text">
+                Everything Your Business Needs In One Place
+            </p>
+
+            <div class="service-container">
+
+                <div class="service-card">
+                    <div class="service-icon">🍔</div>
+                    <h3>Restaurants</h3>
+                    <p>Manage menus, orders and customers easily.</p>
+                    <a href="#">Explore More →</a>
+                </div>
+
+                <div class="service-card">
+                    <div class="service-icon">👕</div>
+                    <h3>Clothing Stores</h3>
+                    <p>Display products and manage your store.</p>
+                    <a href="#">Explore More →</a>
+                </div>
+
+                <div class="service-card">
+                    <div class="service-icon">🛒</div>
+                    <h3>Online Shopping</h3>
+                    <p>Sell products and manage your sales.</p>
+                    <a href="#">Explore More →</a>
+                </div>
+
             </div>
 
-            <div class="service-card">
-                <div class="service-icon">👕</div>
-                <h3>Clothing Stores</h3>
-                <p>Display products and manage your store.</p>
-                <a href="#">Explore More →</a>
-            </div>
+        </section>
 
-            <div class="service-card">
-                <div class="service-icon">🛒</div>
-                <h3>Online Shopping</h3>
-                <p>Sell products and manage your sales.</p>
-                <a href="#">Explore More →</a>
-            </div>
+    </main>
 
-        </div>
-    </section>
-</main>
-
-      <script src="script.js"></script>  
+    <script src="script.js"></script>
 
 </body>
 </html>
