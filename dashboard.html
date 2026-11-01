@@ -1,0 +1,99 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Dashboard - Smart Business</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <header>
+        <div class="logo">
+            Smart<span>Business</span>
+        </div>
+
+        <button class="login" onclick="logout()">
+            Logout
+        </button>
+    </header>
+
+    <main class="dashboard">
+
+        <h1>Business Dashboard</h1>
+
+        <p id="welcomeMessage">Welcome to Smart Business!</p>
+
+        <section class="service-container">
+
+            <div class="service-card">
+                <div class="service-icon">📦</div>
+                <h3>Products</h3>
+                <p>Manage your business products.</p>
+                <button class="signup" onclick="alert('Products module coming next!')">
+                    Manage Products
+                </button>
+            </div>
+
+            <div class="service-card">
+                <div class="service-icon">👥</div>
+                <h3>Customers</h3>
+                <p>Manage your customers.</p>
+                <button class="signup" onclick="alert('Customers module coming next!')">
+                    Manage Customers
+                </button>
+            </div>
+
+            <div class="service-card">
+                <div class="service-icon">🛒</div>
+                <h3>Orders</h3>
+                <p>Track your business orders.</p>
+                <button class="signup" onclick="alert('Orders module coming next!')">
+                    Manage Orders
+                </button>
+            </div>
+
+        </section>
+
+        <section class="about">
+            <h2>Business Information</h2>
+
+            <p id="businessName"></p>
+            <p id="businessType"></p>
+            <p id="userEmail"></p>
+        </section>
+
+    </main>
+
+    <script src="script.js"></script>
+
+    <script>
+        const currentEmail = localStorage.getItem("smartBusinessCurrentUser");
+        const users = JSON.parse(localStorage.getItem("smartBusinessUsers") || "[]");
+
+        const user = users.find(item => item.email === currentEmail);
+
+        if (!user) {
+            window.location.href = "login.html";
+        } else {
+            document.getElementById("welcomeMessage").textContent =
+                "Welcome, " + user.fullName;
+
+            document.getElementById("businessName").textContent =
+                "Business Name: " + user.businessName;
+
+            document.getElementById("businessType").textContent =
+                "Business Type: " + user.businessType;
+
+            document.getElementById("userEmail").textContent =
+                "Email: " + user.email;
+        }
+    </script>
+
+</body>
+</html>
