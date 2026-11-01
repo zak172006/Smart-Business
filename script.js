@@ -1,15 +1,30 @@
 
+// ======================================
 // SMART BUSINESS
+// MAIN JAVASCRIPT SYSTEM
+// ======================================
 
 console.log("Smart Business is Ready!");
 
-// Get Started
+// ======================================
+// NAVIGATION
+// ======================================
+
 function getStarted() {
     window.location.href = "register.html";
 }
 
-// Password hashing for local development demo
+function logout() {
+    localStorage.removeItem("smartBusinessCurrentUser");
+    window.location.href = "login.html";
+}
+
+// ======================================
+// PASSWORD SECURITY
+// ======================================
+
 async function hashPassword(password, salt) {
+
     const encoder = new TextEncoder();
 
     const key = await crypto.subtle.importKey(
@@ -36,8 +51,12 @@ async function hashPassword(password, salt) {
         .join("");
 }
 
-// Register New User
+// ======================================
+// REGISTER NEW USER
+// ======================================
+
 async function registerUser(event) {
+
     event.preventDefault();
 
     const fullName = document.getElementById("fullName").value.trim();
@@ -57,7 +76,10 @@ async function registerUser(event) {
     }
 
     try {
-        const users = JSON.parse(localStorage.getItem("smartBusinessUsers") || "[]");
+
+        const users = JSON.parse(
+            localStorage.getItem("smartBusinessUsers") || "[]"
+        );
 
         if (users.some(user => user.email === email)) {
             alert("This email is already registered. Please login.");
@@ -78,25 +100,35 @@ async function registerUser(event) {
 
         users.push(newUser);
 
-        localStorage.setItem("smartBusinessUsers", JSON.stringify(users));
+        localStorage.setItem(
+            "smartBusinessUsers",
+            JSON.stringify(users)
+        );
 
         alert("Account created successfully! Please login.");
 
         window.location.href = "login.html";
 
     } catch (error) {
+
         console.error(error);
         alert("Something went wrong. Please try again using HTTPS.");
     }
 }
 
+// ======================================
+// LOGIN
+// ======================================
+
 async function handleLogin(event) {
+
     event.preventDefault();
 
     const email = document.getElementById("email").value.trim().toLowerCase();
     const password = document.getElementById("password").value;
 
     try {
+
         const users = JSON.parse(
             localStorage.getItem("smartBusinessUsers") || "[]"
         );
@@ -125,15 +157,18 @@ async function handleLogin(event) {
         window.location.href = "dashboard.html";
 
     } catch (error) {
+
         console.error(error);
         alert("Login failed. Please try again.");
     }
 }
 
-
+// ======================================
 // SHOW / HIDE PASSWORD
+// ======================================
 
 function togglePassword() {
+
     const passwordInput = document.getElementById("password");
 
     if (passwordInput.type === "password") {
@@ -142,46 +177,35 @@ function togglePassword() {
         passwordInput.type = "password";
     }
 }
-function logout() {
-    localStorage.removeItem("smartBusinessCurrentUser");
-    window.location.href = "login.html";
-}
 
-// ==================================
-// SMART BUSINESS - PRODUCT SYSTEM
-// ==================================
+// ======================================
+// PRODUCT MANAGEMENT
+// ======================================
 
-// Get products belonging to current user
 function getUserProducts() {
 
     const email = localStorage.getItem("smartBusinessCurrentUser");
 
-    if (!email) {
-        return [];
-    }
+    if (!email) return [];
 
     const key = "smartBusinessProducts_" + email;
 
     return JSON.parse(localStorage.getItem(key) || "[]");
 }
 
-
-// Save products
 function saveUserProducts(products) {
 
     const email = localStorage.getItem("smartBusinessCurrentUser");
 
-    if (!email) {
-        return;
-    }
+    if (!email) return;
 
     const key = "smartBusinessProducts_" + email;
 
     localStorage.setItem(key, JSON.stringify(products));
 }
 
+// ADD PRODUCT
 
-// Add new product
 function addProduct(event) {
 
     event.preventDefault();
@@ -192,23 +216,25 @@ function addProduct(event) {
 
     const quantity = Number(document.getElementById("productQuantity").value);
 
-    if (!name || !Number.isFinite(price) || price <= 0 ||
-        !Number.isInteger(quantity) || quantity < 0) {
-
+    if (
+        !name ||
+        !Number.isFinite(price) ||
+        price <= 0 ||
+        !Number.isInteger(quantity) ||
+        quantity < 0
+    ) {
         alert("Please enter valid product information.");
         return;
     }
 
     const products = getUserProducts();
 
-    const newProduct = {
+    products.push({
         id: crypto.randomUUID(),
-        name: name,
-        price: price,
-        quantity: quantity
-    };
-
-    products.push(newProduct);
+        name,
+        price,
+        quantity
+    });
 
     saveUserProducts(products);
 
@@ -219,38 +245,37 @@ function addProduct(event) {
     alert("Product added successfully!");
 }
 
+// DISPLAY PRODUCTS
 
-// Display products
 function loadProducts() {
 
     const products = getUserProducts();
 
     const list = document.getElementById("productsList");
-
     const table = document.getElementById("productsTable");
-
     const emptyMessage = document.getElementById("emptyProducts");
-
     const count = document.getElementById("productCount");
 
-    if (!list || !table || !emptyMessage || !count) {
-        return;
-    }
+    if (!list || !table || !emptyMessage || !count) return;
 
     list.replaceChildren();
 
     count.textContent = products.length + " Products";
 
     if (products.length === 0) {
+
         table.style.display = "none";
         emptyMessage.style.display = "block";
+
+        updateDashboardStats();
+
         return;
     }
 
     table.style.display = "table";
     emptyMessage.style.display = "none";
 
-    products.forEach(function(product) {
+    products.forEach(product => {
 
         const row = document.createElement("tr");
 
@@ -258,7 +283,7 @@ function loadProducts() {
         nameCell.textContent = product.name;
 
         const priceCell = document.createElement("td");
-        priceCell.textContent = product.price.toFixed(2);
+        priceCell.textContent = Number(product.price).toFixed(2);
 
         const quantityCell = document.createElement("td");
         quantityCell.textContent = product.quantity;
@@ -266,18 +291,16 @@ function loadProducts() {
         const actionsCell = document.createElement("td");
 
         const editButton = document.createElement("button");
+
         editButton.textContent = "Edit";
         editButton.type = "button";
-        editButton.onclick = function() {
-            editProduct(product.id);
-        };
+        editButton.onclick = () => editProduct(product.id);
 
         const deleteButton = document.createElement("button");
+
         deleteButton.textContent = "Delete";
         deleteButton.type = "button";
-        deleteButton.onclick = function() {
-            deleteProduct(product.id);
-        };
+        deleteButton.onclick = () => deleteProduct(product.id);
 
         actionsCell.append(editButton, deleteButton);
 
@@ -289,39 +312,32 @@ function loadProducts() {
         );
 
         list.appendChild(row);
-
     });
+
+    updateDashboardStats();
 }
 
+// EDIT PRODUCT
 
-// Edit product
 function editProduct(id) {
 
     const products = getUserProducts();
 
     const product = products.find(item => item.id === id);
 
-    if (!product) {
-        return;
-    }
+    if (!product) return;
 
     const newName = prompt("Enter new product name:", product.name);
 
-    if (newName === null) {
-        return;
-    }
+    if (newName === null) return;
 
     const newPrice = prompt("Enter new price:", product.price);
 
-    if (newPrice === null) {
-        return;
-    }
+    if (newPrice === null) return;
 
     const newQuantity = prompt("Enter new quantity:", product.quantity);
 
-    if (newQuantity === null) {
-        return;
-    }
+    if (newQuantity === null) return;
 
     const price = Number(newPrice);
     const quantity = Number(newQuantity);
@@ -345,18 +361,18 @@ function editProduct(id) {
 
     loadProducts();
 
+    refreshOrderOptions();
+
     alert("Product updated successfully!");
 }
 
+// DELETE PRODUCT
 
-// Delete product
 function deleteProduct(id) {
 
     const confirmed = confirm("Are you sure you want to delete this product?");
 
-    if (!confirmed) {
-        return;
-    }
+    if (!confirmed) return;
 
     const products = getUserProducts();
 
@@ -368,14 +384,17 @@ function deleteProduct(id) {
 
     loadProducts();
 
+    refreshOrderOptions();
+
     alert("Product deleted successfully!");
 }
 
 // ======================================
-// SMART BUSINESS - CUSTOMERS MANAGEMENT
+// CUSTOMER MANAGEMENT
 // ======================================
 
 function getCustomers() {
+
     const email = localStorage.getItem("smartBusinessCurrentUser");
 
     if (!email) return [];
@@ -386,6 +405,7 @@ function getCustomers() {
 }
 
 function saveCustomers(customers) {
+
     const email = localStorage.getItem("smartBusinessCurrentUser");
 
     if (!email) return;
@@ -396,11 +416,16 @@ function saveCustomers(customers) {
     );
 }
 
+// ADD CUSTOMER
+
 function addCustomer(event) {
+
     event.preventDefault();
 
     const name = document.getElementById("customerName").value.trim();
+
     const email = document.getElementById("customerEmail").value.trim().toLowerCase();
+
     const phone = document.getElementById("customerPhone").value.trim();
 
     if (!name || !email || !phone) {
@@ -431,7 +456,10 @@ function addCustomer(event) {
     alert("Customer added successfully!");
 }
 
+// DISPLAY CUSTOMERS
+
 function loadCustomers() {
+
     const customers = getCustomers();
 
     const list = document.getElementById("customersList");
@@ -446,15 +474,20 @@ function loadCustomers() {
     table.style.display = customers.length ? "table" : "none";
 
     customers.forEach(customer => {
+
         const row = document.createElement("tr");
 
         [customer.name, customer.email, customer.phone].forEach(value => {
+
             const cell = document.createElement("td");
+
             cell.textContent = value;
+
             row.appendChild(cell);
         });
 
         const actionCell = document.createElement("td");
+
         const deleteButton = document.createElement("button");
 
         deleteButton.type = "button";
@@ -463,15 +496,31 @@ function loadCustomers() {
         deleteButton.onclick = () => deleteCustomer(customer.id);
 
         actionCell.appendChild(deleteButton);
+
         row.appendChild(actionCell);
 
         list.appendChild(row);
     });
 
     refreshOrderOptions();
+
+    updateDashboardStats();
 }
 
+// DELETE CUSTOMER
+
 function deleteCustomer(id) {
+
+    const relatedOrders = getOrders().some(
+        order => order.customerId === id &&
+        order.status !== "Cancelled"
+    );
+
+    if (relatedOrders) {
+        alert("This customer has active orders. Cancel or delete them first.");
+        return;
+    }
+
     if (!confirm("Delete this customer?")) return;
 
     const customers = getCustomers().filter(
@@ -483,12 +532,12 @@ function deleteCustomer(id) {
     loadCustomers();
 }
 
-
 // ======================================
-// SMART BUSINESS - ORDERS MANAGEMENT
+// ORDER MANAGEMENT
 // ======================================
 
 function getOrders() {
+
     const email = localStorage.getItem("smartBusinessCurrentUser");
 
     if (!email) return [];
@@ -499,6 +548,7 @@ function getOrders() {
 }
 
 function saveOrders(orders) {
+
     const email = localStorage.getItem("smartBusinessCurrentUser");
 
     if (!email) return;
@@ -509,7 +559,10 @@ function saveOrders(orders) {
     );
 }
 
+// REFRESH CUSTOMER AND PRODUCT OPTIONS
+
 function refreshOrderOptions() {
+
     const customerSelect = document.getElementById("orderCustomer");
     const productSelect = document.getElementById("orderProduct");
 
@@ -519,39 +572,61 @@ function refreshOrderOptions() {
     productSelect.replaceChildren();
 
     const customerDefault = document.createElement("option");
+
     customerDefault.value = "";
     customerDefault.textContent = "Choose Customer";
+
     customerSelect.appendChild(customerDefault);
 
     getCustomers().forEach(customer => {
+
         const option = document.createElement("option");
+
         option.value = customer.id;
         option.textContent = customer.name;
+
         customerSelect.appendChild(option);
     });
 
     const productDefault = document.createElement("option");
+
     productDefault.value = "";
     productDefault.textContent = "Choose Product";
+
     productSelect.appendChild(productDefault);
 
     getUserProducts().forEach(product => {
+
         const option = document.createElement("option");
+
         option.value = product.id;
-        option.textContent = product.name + " - " + product.price + " EGP";
+
+        option.textContent =
+            product.name + " - " + product.price + " EGP (Stock: " + product.quantity + ")";
+
         productSelect.appendChild(option);
     });
 }
 
+// ADD ORDER
+
 function addOrder(event) {
+
     event.preventDefault();
 
     const customerId = document.getElementById("orderCustomer").value;
+
     const productId = document.getElementById("orderProduct").value;
+
     const quantity = Number(document.getElementById("orderQuantity").value);
 
-    const customer = getCustomers().find(item => item.id === customerId);
-    const product = getUserProducts().find(item => item.id === productId);
+    const customers = getCustomers();
+
+    const products = getUserProducts();
+
+    const customer = customers.find(item => item.id === customerId);
+
+    const product = products.find(item => item.id === productId);
 
     if (!customer || !product) {
         alert("Please select a valid customer and product.");
@@ -568,15 +643,31 @@ function addOrder(event) {
         return;
     }
 
+    // Reduce product stock
+    product.quantity -= quantity;
+
+    saveUserProducts(products);
+
     const orders = getOrders();
 
     orders.push({
+
         id: crypto.randomUUID(),
+
+        customerId: customer.id,
+
         customerName: customer.name,
+
+        productId: product.id,
+
         productName: product.name,
+
         quantity: quantity,
+
         total: product.price * quantity,
+
         status: "Pending",
+
         createdAt: new Date().toISOString()
     });
 
@@ -584,12 +675,17 @@ function addOrder(event) {
 
     document.getElementById("orderForm").reset();
 
+    loadProducts();
+
     loadOrders();
 
     alert("Order created successfully!");
 }
 
+// DISPLAY ORDERS
+
 function loadOrders() {
+
     const orders = getOrders();
 
     const list = document.getElementById("ordersList");
@@ -604,107 +700,234 @@ function loadOrders() {
     table.style.display = orders.length ? "table" : "none";
 
     orders.forEach(order => {
+
         const row = document.createElement("tr");
 
         const values = [
+
             order.customerName,
+
             order.productName,
+
             order.quantity,
-            order.total.toFixed(2) + " EGP"
+
+            Number(order.total).toFixed(2) + " EGP"
         ];
 
         values.forEach(value => {
+
             const cell = document.createElement("td");
+
             cell.textContent = value;
+
             row.appendChild(cell);
         });
 
         const statusCell = document.createElement("td");
+
         const statusSelect = document.createElement("select");
 
         ["Pending", "Processing", "Completed", "Cancelled"].forEach(status => {
+
             const option = document.createElement("option");
+
             option.value = status;
             option.textContent = status;
+
             statusSelect.appendChild(option);
         });
 
         statusSelect.value = order.status;
-        statusSelect.onchange = () => updateOrderStatus(order.id, statusSelect.value);
+
+        statusSelect.onchange = () => {
+
+            updateOrderStatus(order.id, statusSelect.value);
+        };
 
         statusCell.appendChild(statusSelect);
+
         row.appendChild(statusCell);
 
         const actionCell = document.createElement("td");
+
         const deleteButton = document.createElement("button");
 
         deleteButton.type = "button";
         deleteButton.textContent = "Delete";
+
         deleteButton.onclick = () => deleteOrder(order.id);
 
         actionCell.appendChild(deleteButton);
+
         row.appendChild(actionCell);
 
         list.appendChild(row);
     });
 
     refreshOrderOptions();
+
+    updateDashboardStats();
 }
 
+// UPDATE ORDER STATUS
+
 function updateOrderStatus(id, status) {
-    const allowed = ["Pending", "Processing", "Completed", "Cancelled"];
+
+    const allowed = [
+        "Pending",
+        "Processing",
+        "Completed",
+        "Cancelled"
+    ];
 
     if (!allowed.includes(status)) return;
 
     const orders = getOrders();
+
     const order = orders.find(item => item.id === id);
 
     if (!order) return;
 
+    const previousStatus = order.status;
+
+    // Restore stock when cancelling
+    if (previousStatus !== "Cancelled" && status === "Cancelled") {
+
+        const products = getUserProducts();
+
+        const product = products.find(
+            item => item.id === order.productId
+        );
+
+        if (product) {
+
+            product.quantity += order.quantity;
+
+            saveUserProducts(products);
+        }
+    }
+
+    // Deduct stock again when restoring a cancelled order
+    if (previousStatus === "Cancelled" && status !== "Cancelled") {
+
+        const products = getUserProducts();
+
+        const product = products.find(
+            item => item.id === order.productId
+        );
+
+        if (!product || product.quantity < order.quantity) {
+
+            alert("Not enough stock to reactivate this order.");
+
+            loadOrders();
+
+            return;
+        }
+
+        product.quantity -= order.quantity;
+
+        saveUserProducts(products);
+    }
+
     order.status = status;
 
     saveOrders(orders);
-}
 
-function deleteOrder(id) {
-    if (!confirm("Delete this order?")) return;
-
-    const orders = getOrders().filter(order => order.id !== id);
-
-    saveOrders(orders);
+    loadProducts();
 
     loadOrders();
+
+    updateDashboardStats();
+}
+
+// DELETE ORDER
+
+function deleteOrder(id) {
+
+    if (!confirm("Delete this order?")) return;
+
+    const orders = getOrders();
+
+    const order = orders.find(item => item.id === id);
+
+    if (!order) return;
+
+    // Return stock if order was not cancelled
+    if (order.status !== "Cancelled") {
+
+        const products = getUserProducts();
+
+        const product = products.find(
+            item => item.id === order.productId
+        );
+
+        if (product) {
+
+            product.quantity += order.quantity;
+
+            saveUserProducts(products);
+        }
+    }
+
+    const updatedOrders = orders.filter(
+        item => item.id !== id
+    );
+
+    saveOrders(updatedOrders);
+
+    loadProducts();
+
+    loadOrders();
+
+    updateDashboardStats();
 }
 
 // ======================================
-// SMART BUSINESS - DASHBOARD STATISTICS
+// DASHBOARD STATISTICS
 // ======================================
 
 function updateDashboardStats() {
 
     const products = getUserProducts();
+
     const customers = getCustomers();
+
     const orders = getOrders();
 
-    const completedOrders = orders.filter(
-        order => order.status === "Completed"
-    );
+    const productCount = document.getElementById("productCount");
 
-    const totalSales = completedOrders.reduce(
-        (total, order) => total + Number(order.total || 0),
-        0
-    );
+    const customerCount = document.getElementById("customerCount");
 
-    document.getElementById("productCount").textContent =
-        products.length + " Products";
+    const orderCount = document.getElementById("orderCount");
 
-    document.getElementById("customerCount").textContent =
-        customers.length + " Customers";
+    const salesCount = document.getElementById("salesCount");
 
-    document.getElementById("orderCount").textContent =
-        orders.length + " Orders";
+    if (productCount) {
+        productCount.textContent = products.length + " Products";
+    }
 
-    document.getElementById("salesCount").textContent =
-        totalSales.toFixed(2) + " EGP";
+    if (customerCount) {
+        customerCount.textContent = customers.length + " Customers";
+    }
+
+    if (orderCount) {
+        orderCount.textContent = orders.length + " Orders";
+    }
+
+    const totalSales = orders
+
+        .filter(order => order.status === "Completed")
+
+        .reduce((total, order) => {
+            return total + Number(order.total || 0);
+        }, 0);
+
+    if (salesCount) {
+        salesCount.textContent = totalSales.toFixed(2) + " EGP";
+    }
 }
 
+// ======================================
+// END OF SMART BUSINESS SYSTEM
+// ======================================
