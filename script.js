@@ -89,3 +89,56 @@ async function registerUser(event) {
         alert("Something went wrong. Please try again using HTTPS.");
     }
 }
+
+async function handleLogin(event) {
+    event.preventDefault();
+
+    const email = document.getElementById("email").value.trim().toLowerCase();
+    const password = document.getElementById("password").value;
+
+    try {
+        const users = JSON.parse(
+            localStorage.getItem("smartBusinessUsers") || "[]"
+        );
+
+        const user = users.find(user => user.email === email);
+
+        if (!user) {
+            alert("Account not found. Please create an account first.");
+            return;
+        }
+
+        const passwordHash = await hashPassword(password, user.salt);
+
+        if (passwordHash !== user.passwordHash) {
+            alert("Incorrect password. Please try again.");
+            return;
+        }
+
+        localStorage.setItem(
+            "smartBusinessCurrentUser",
+            user.email
+        );
+
+        alert("Login successful! Welcome " + user.fullName);
+
+        window.location.href = "dashboard.html";
+
+    } catch (error) {
+        console.error(error);
+        alert("Login failed. Please try again.");
+    }
+}
+
+
+// SHOW / HIDE PASSWORD
+
+function togglePassword() {
+    const passwordInput = document.getElementById("password");
+
+    if (passwordInput.type === "password") {
+        passwordInput.type = "text";
+    } else {
+        passwordInput.type = "password";
+    }
+}
