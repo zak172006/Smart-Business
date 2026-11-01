@@ -676,3 +676,35 @@ function deleteOrder(id) {
     loadOrders();
 }
 
+// ======================================
+// SMART BUSINESS - DASHBOARD STATISTICS
+// ======================================
+
+function updateDashboardStats() {
+
+    const products = getUserProducts();
+    const customers = getCustomers();
+    const orders = getOrders();
+
+    const completedOrders = orders.filter(
+        order => order.status === "Completed"
+    );
+
+    const totalSales = completedOrders.reduce(
+        (total, order) => total + Number(order.total || 0),
+        0
+    );
+
+    document.getElementById("productCount").textContent =
+        products.length + " Products";
+
+    document.getElementById("customerCount").textContent =
+        customers.length + " Customers";
+
+    document.getElementById("orderCount").textContent =
+        orders.length + " Orders";
+
+    document.getElementById("salesCount").textContent =
+        totalSales.toFixed(2) + " EGP";
+}
+
