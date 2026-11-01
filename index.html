@@ -1,43 +1,59 @@
 
 
+
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smart Business</title>
+
+    <title>Smart Business | Business Management Platform</title>
+
+    <meta name="description" content="Smart Business is an all-in-one platform for managing businesses, stores, products and customers.">
+
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
+    <!-- HEADER -->
     <header>
-        <div class="logo">Smart<span>Business</span></div>
+        <div class="logo">
+            Smart<span>Business</span>
+        </div>
 
         <nav>
             <a href="index.html">Home</a>
             <a href="#services">Services</a>
+            <a href="#features">Features</a>
             <a href="#about">About</a>
             <a href="#contact">Contact</a>
         </nav>
 
         <div class="buttons">
-            <button class="login" onclick="window.location.href='login.html'">
+            <button class="login"
+                onclick="window.location.href='login.html'">
                 Login
             </button>
 
-            <button class="signup" onclick="window.location.href='login.html'">
+            <button class="signup"
+                onclick="window.location.href='register.html'">
                 Get Started
             </button>
         </div>
     </header>
 
+
+    <!-- MAIN -->
     <main>
 
+        <!-- HERO SECTION -->
         <section class="hero">
 
-            <span class="tag">SMART BUSINESS PLATFORM</span>
+            <span class="tag">
+                SMART BUSINESS PLATFORM
+            </span>
 
             <h1>
                 Manage Your Business
@@ -46,17 +62,19 @@
             </h1>
 
             <p>
-                One Platform To Manage Your Business,
-                Products And Customers Easily.
+                One powerful platform to manage your business,
+                products, services and customers easily.
             </p>
 
             <div class="hero-buttons">
 
-                <button class="signup" onclick="window.location.href='login.html'">
-                    Get Started
+                <button class="signup"
+                    onclick="window.location.href='register.html'">
+                    Start Your Business
                 </button>
 
-                <button class="login" onclick="document.getElementById('services').scrollIntoView({behavior:'smooth'})">
+                <button class="login"
+                    onclick="document.getElementById('services').scrollIntoView({behavior:'smooth'})">
                     Explore Services
                 </button>
 
@@ -64,6 +82,8 @@
 
         </section>
 
+
+        <!-- SERVICES SECTION -->
         <section class="services" id="services">
 
             <h2>Explore Our Services</h2>
@@ -76,43 +96,154 @@
 
                 <div class="service-card">
                     <div class="service-icon">🍔</div>
+
                     <h3>Restaurants</h3>
-                    <p>Manage menus, orders and customers easily.</p>
-                    <a href="#">Explore More →</a>
+
+                    <p>
+                        Manage restaurant menus,
+                        orders and customers easily.
+                    </p>
+
+                    <a href="register.html">
+                        Get Started →
+                    </a>
                 </div>
+
 
                 <div class="service-card">
                     <div class="service-icon">👕</div>
+
                     <h3>Clothing Stores</h3>
-                    <p>Display products and manage your store.</p>
-                    <a href="#">Explore More →</a>
+
+                    <p>
+                        Display clothing products
+                        and manage your online store.
+                    </p>
+
+                    <a href="register.html">
+                        Get Started →
+                    </a>
                 </div>
+
 
                 <div class="service-card">
                     <div class="service-icon">🛒</div>
+
                     <h3>Online Shopping</h3>
-                    <p>Sell products and manage your sales.</p>
-                    <a href="#">Explore More →</a>
+
+                    <p>
+                        Sell products, manage orders
+                        and organize your sales.
+                    </p>
+
+                    <a href="register.html">
+                        Get Started →
+                    </a>
                 </div>
 
             </div>
 
         </section>
 
-        <section id="about">
-            <h2>About Smart Business</h2>
+
+        <!-- FEATURES SECTION -->
+        <section id="features" class="features">
+
+            <h2>Powerful Business Features</h2>
+
             <p>
-                Smart Business helps companies manage
-                their activities from one platform.
+                Everything you need to control your business
+                from one simple platform.
             </p>
+
+            <div class="service-container">
+
+                <div class="service-card">
+                    <div class="service-icon">📊</div>
+                    <h3>Business Dashboard</h3>
+                    <p>
+                        Monitor your business activities
+                        and track your performance.
+                    </p>
+                </div>
+
+                <div class="service-card">
+                    <div class="service-icon">📦</div>
+                    <h3>Product Management</h3>
+                    <p>
+                        Add, edit and organize
+                        your products easily.
+                    </p>
+                </div>
+
+                <div class="service-card">
+                    <div class="service-icon">👥</div>
+                    <h3>Customer Management</h3>
+                    <p>
+                        Organize customer information
+                        and improve customer service.
+                    </p>
+                </div>
+
+            </div>
+
         </section>
 
-        <section id="contact">
+
+        <!-- ABOUT SECTION -->
+        <section id="about" class="about">
+
+            <h2>About Smart Business</h2>
+
+            <p>
+                Smart Business is a multi-activity business
+                management platform designed to help companies,
+                restaurants and online stores manage their
+                operations from one place.
+
+                Our goal is to make business management
+                easier, faster and smarter.
+            </p>
+
+        </section>
+
+
+        <!-- CONTACT SECTION -->
+        <section id="contact" class="contact">
+
             <h2>Contact Us</h2>
-            <p>We are here to help your business grow.</p>
+
+            <p>
+                We are here to help your business grow.
+            </p>
+
+            <a href="mailto:contact@smartbusiness.com">
+                Contact Our Team
+            </a>
+
         </section>
 
     </main>
+
+
+    <!-- FOOTER -->
+    <footer>
+
+        <div class="logo">
+            Smart<span>Business</span>
+        </div>
+
+        <p>
+            Smart Business © 2026.
+            All Rights Reserved.
+        </p>
+
+        <p>
+            Manage Your Business The Smart Way.
+        </p>
+
+    </footer>
+
 
     <script src="script.js"></script>
 
