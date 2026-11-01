@@ -1,11 +1,14 @@
 
+
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Login - Smart Business</title>
+
     <link rel="stylesheet" href="style.css">
 </head>
 
@@ -13,36 +16,56 @@
 
     <div class="login-container">
 
+        <div class="logo">
+            Smart<span>Business</span>
+        </div>
+
         <h1>Welcome Back!</h1>
 
         <p>Login to your Smart Business account</p>
 
-        <form onsubmit="handleLogin(event)">
+        <form id="loginForm" onsubmit="handleLogin(event)">
 
-            <label>Email Address</label>
+            <label for="email">Email Address</label>
+
             <input
                 type="email"
                 id="email"
+                name="email"
                 placeholder="Enter your email"
+                autocomplete="email"
                 required
             >
 
-            <label>Password</label>
+            <label for="password">Password</label>
+
             <input
                 type="password"
                 id="password"
+                name="password"
                 placeholder="Enter your password"
+                autocomplete="current-password"
                 required
             >
 
+            <button type="button" class="login"
+                onclick="togglePassword()">
+                Show / Hide Password
+            </button>
+
             <button type="submit" class="signup">
-                Login
+                Login to Account
             </button>
 
         </form>
 
         <p class="back-home">
-            <a href="index.html">Back to Home</a>
+            Don't have an account?
+            <a href="register.html">Create Account</a>
+        </p>
+
+        <p class="back-home">
+            <a href="index.html">← Back to Home</a>
         </p>
 
     </div>
