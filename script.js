@@ -146,3 +146,227 @@ function logout() {
     localStorage.removeItem("smartBusinessCurrentUser");
     window.location.href = "login.html";
 }
+
+// ==================================
+// SMART BUSINESS - PRODUCT SYSTEM
+// ==================================
+
+// Get products belonging to current user
+function getUserProducts() {
+
+    const email = localStorage.getItem("smartBusinessCurrentUser");
+
+    if (!email) {
+        return [];
+    }
+
+    const key = "smartBusinessProducts_" + email;
+
+    return JSON.parse(localStorage.getItem(key) || "[]");
+}
+
+
+// Save products
+function saveUserProducts(products) {
+
+    const email = localStorage.getItem("smartBusinessCurrentUser");
+
+    if (!email) {
+        return;
+    }
+
+    const key = "smartBusinessProducts_" + email;
+
+    localStorage.setItem(key, JSON.stringify(products));
+}
+
+
+// Add new product
+function addProduct(event) {
+
+    event.preventDefault();
+
+    const name = document.getElementById("productName").value.trim();
+
+    const price = Number(document.getElementById("productPrice").value);
+
+    const quantity = Number(document.getElementById("productQuantity").value);
+
+    if (!name || !Number.isFinite(price) || price <= 0 ||
+        !Number.isInteger(quantity) || quantity < 0) {
+
+        alert("Please enter valid product information.");
+        return;
+    }
+
+    const products = getUserProducts();
+
+    const newProduct = {
+        id: crypto.randomUUID(),
+        name: name,
+        price: price,
+        quantity: quantity
+    };
+
+    products.push(newProduct);
+
+    saveUserProducts(products);
+
+    document.getElementById("productForm").reset();
+
+    loadProducts();
+
+    alert("Product added successfully!");
+}
+
+
+// Display products
+function loadProducts() {
+
+    const products = getUserProducts();
+
+    const list = document.getElementById("productsList");
+
+    const table = document.getElementById("productsTable");
+
+    const emptyMessage = document.getElementById("emptyProducts");
+
+    const count = document.getElementById("productCount");
+
+    if (!list || !table || !emptyMessage || !count) {
+        return;
+    }
+
+    list.replaceChildren();
+
+    count.textContent = products.length + " Products";
+
+    if (products.length === 0) {
+        table.style.display = "none";
+        emptyMessage.style.display = "block";
+        return;
+    }
+
+    table.style.display = "table";
+    emptyMessage.style.display = "none";
+
+    products.forEach(function(product) {
+
+        const row = document.createElement("tr");
+
+        const nameCell = document.createElement("td");
+        nameCell.textContent = product.name;
+
+        const priceCell = document.createElement("td");
+        priceCell.textContent = product.price.toFixed(2);
+
+        const quantityCell = document.createElement("td");
+        quantityCell.textContent = product.quantity;
+
+        const actionsCell = document.createElement("td");
+
+        const editButton = document.createElement("button");
+        editButton.textContent = "Edit";
+        editButton.type = "button";
+        editButton.onclick = function() {
+            editProduct(product.id);
+        };
+
+        const deleteButton = document.createElement("button");
+        deleteButton.textContent = "Delete";
+        deleteButton.type = "button";
+        deleteButton.onclick = function() {
+            deleteProduct(product.id);
+        };
+
+        actionsCell.append(editButton, deleteButton);
+
+        row.append(
+            nameCell,
+            priceCell,
+            quantityCell,
+            actionsCell
+        );
+
+        list.appendChild(row);
+
+    });
+}
+
+
+// Edit product
+function editProduct(id) {
+
+    const products = getUserProducts();
+
+    const product = products.find(item => item.id === id);
+
+    if (!product) {
+        return;
+    }
+
+    const newName = prompt("Enter new product name:", product.name);
+
+    if (newName === null) {
+        return;
+    }
+
+    const newPrice = prompt("Enter new price:", product.price);
+
+    if (newPrice === null) {
+        return;
+    }
+
+    const newQuantity = prompt("Enter new quantity:", product.quantity);
+
+    if (newQuantity === null) {
+        return;
+    }
+
+    const price = Number(newPrice);
+    const quantity = Number(newQuantity);
+
+    if (
+        !newName.trim() ||
+        !Number.isFinite(price) ||
+        price <= 0 ||
+        !Number.isInteger(quantity) ||
+        quantity < 0
+    ) {
+        alert("Invalid product information.");
+        return;
+    }
+
+    product.name = newName.trim();
+    product.price = price;
+    product.quantity = quantity;
+
+    saveUserProducts(products);
+
+    loadProducts();
+
+    alert("Product updated successfully!");
+}
+
+
+// Delete product
+function deleteProduct(id) {
+
+    const confirmed = confirm("Are you sure you want to delete this product?");
+
+    if (!confirmed) {
+        return;
+    }
+
+    const products = getUserProducts();
+
+    const updatedProducts = products.filter(
+        product => product.id !== id
+    );
+
+    saveUserProducts(updatedProducts);
+
+    loadProducts();
+
+    alert("Product deleted successfully!");
+}
