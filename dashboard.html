@@ -1,5 +1,6 @@
 
 
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -30,6 +31,8 @@
 
         <p id="welcomeMessage">Welcome!</p>
 
+        <!-- DASHBOARD CARDS -->
+
         <section class="service-container">
 
             <div class="service-card">
@@ -41,35 +44,42 @@
             <div class="service-card">
                 <div class="service-icon">👥</div>
                 <h3>Customers</h3>
-                <p>Customer Management</p>
+                <p id="customerCount">0 Customers</p>
             </div>
 
             <div class="service-card">
                 <div class="service-icon">🛒</div>
                 <h3>Orders</h3>
-                <p>Order Management</p>
+                <p id="orderCount">0 Orders</p>
             </div>
 
         </section>
 
+        <!-- BUSINESS INFORMATION -->
+
         <section class="about">
+
             <h2>Business Information</h2>
+
             <p id="businessName"></p>
             <p id="businessType"></p>
             <p id="userEmail"></p>
+
         </section>
+
 
         <!-- PRODUCT MANAGEMENT -->
 
         <section class="about">
 
-            <h2>Product Management</h2>
+            <h2>📦 Product Management</h2>
 
             <p>Add and manage your business products.</p>
 
             <form id="productForm" onsubmit="addProduct(event)">
 
                 <label for="productName">Product Name</label>
+
                 <input
                     type="text"
                     id="productName"
@@ -78,6 +88,7 @@
                 >
 
                 <label for="productPrice">Product Price</label>
+
                 <input
                     type="number"
                     id="productPrice"
@@ -88,6 +99,7 @@
                 >
 
                 <label for="productQuantity">Product Quantity</label>
+
                 <input
                     type="number"
                     id="productQuantity"
@@ -105,13 +117,12 @@
 
             <h2>My Products</h2>
 
-            <p id="emptyProducts">
-                No products added yet.
-            </p>
+            <p id="emptyProducts">No products added yet.</p>
 
             <div style="overflow-x:auto;">
 
-                <table id="productsTable" style="width:100%; text-align:left; display:none;">
+                <table id="productsTable"
+                    style="width:100%; text-align:left; display:none;">
 
                     <thead>
                         <tr>
@@ -130,22 +141,170 @@
 
         </section>
 
+
+        <!-- CUSTOMER MANAGEMENT -->
+
+        <section class="about">
+
+            <h2>👥 Customer Management</h2>
+
+            <p>Add and manage your business customers.</p>
+
+            <form id="customerForm" onsubmit="addCustomer(event)">
+
+                <label for="customerName">Customer Name</label>
+
+                <input
+                    type="text"
+                    id="customerName"
+                    placeholder="Enter customer name"
+                    required
+                >
+
+                <label for="customerEmail">Customer Email</label>
+
+                <input
+                    type="email"
+                    id="customerEmail"
+                    placeholder="Enter customer email"
+                    required
+                >
+
+                <label for="customerPhone">Phone Number</label>
+
+                <input
+                    type="tel"
+                    id="customerPhone"
+                    placeholder="Enter phone number"
+                    required
+                >
+
+                <button type="submit" class="signup">
+                    Add Customer
+                </button>
+
+            </form>
+
+            <h2>My Customers</h2>
+
+            <p id="emptyCustomers">No customers added yet.</p>
+
+            <div style="overflow-x:auto;">
+
+                <table id="customersTable"
+                    style="width:100%; text-align:left; display:none;">
+
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="customersList"></tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+
+        <!-- ORDER MANAGEMENT -->
+
+        <section class="about">
+
+            <h2>🛒 Orders Management</h2>
+
+            <p>Create and track customer orders.</p>
+
+            <form id="orderForm" onsubmit="addOrder(event)">
+
+                <label for="orderCustomer">Select Customer</label>
+
+                <select id="orderCustomer" required>
+                    <option value="">Choose Customer</option>
+                </select>
+
+                <label for="orderProduct">Select Product</label>
+
+                <select id="orderProduct" required>
+                    <option value="">Choose Product</option>
+                </select>
+
+                <label for="orderQuantity">Quantity</label>
+
+                <input
+                    type="number"
+                    id="orderQuantity"
+                    min="1"
+                    step="1"
+                    placeholder="Enter quantity"
+                    required
+                >
+
+                <button type="submit" class="signup">
+                    Create Order
+                </button>
+
+            </form>
+
+            <h2>My Orders</h2>
+
+            <p id="emptyOrders">No orders created yet.</p>
+
+            <div style="overflow-x:auto;">
+
+                <table id="ordersTable"
+                    style="width:100%; text-align:left; display:none;">
+
+                    <thead>
+                        <tr>
+                            <th>Customer</th>
+                            <th>Product</th>
+                            <th>Quantity</th>
+                            <th>Total</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="ordersList"></tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
     </main>
+
+
+    <!-- JAVASCRIPT -->
 
     <script src="script.js"></script>
 
     <script>
-        const currentEmail = localStorage.getItem("smartBusinessCurrentUser");
+
+        const currentEmail =
+            localStorage.getItem("smartBusinessCurrentUser");
 
         const users = JSON.parse(
             localStorage.getItem("smartBusinessUsers") || "[]"
         );
 
-        const user = users.find(item => item.email === currentEmail);
+        const user = users.find(
+            item => item.email === currentEmail
+        );
 
         if (!user) {
+
             window.location.href = "login.html";
+
         } else {
+
             document.getElementById("welcomeMessage").textContent =
                 "Welcome, " + user.fullName;
 
@@ -159,7 +318,11 @@
                 "Email: " + user.email;
 
             loadProducts();
+            loadCustomers();
+            loadOrders();
+
         }
+
     </script>
 
 </body>
