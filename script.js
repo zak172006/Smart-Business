@@ -370,3 +370,309 @@ function deleteProduct(id) {
 
     alert("Product deleted successfully!");
 }
+
+// ======================================
+// SMART BUSINESS - CUSTOMERS MANAGEMENT
+// ======================================
+
+function getCustomers() {
+    const email = localStorage.getItem("smartBusinessCurrentUser");
+
+    if (!email) return [];
+
+    return JSON.parse(
+        localStorage.getItem("smartBusinessCustomers_" + email) || "[]"
+    );
+}
+
+function saveCustomers(customers) {
+    const email = localStorage.getItem("smartBusinessCurrentUser");
+
+    if (!email) return;
+
+    localStorage.setItem(
+        "smartBusinessCustomers_" + email,
+        JSON.stringify(customers)
+    );
+}
+
+function addCustomer(event) {
+    event.preventDefault();
+
+    const name = document.getElementById("customerName").value.trim();
+    const email = document.getElementById("customerEmail").value.trim().toLowerCase();
+    const phone = document.getElementById("customerPhone").value.trim();
+
+    if (!name || !email || !phone) {
+        alert("Please complete all customer fields.");
+        return;
+    }
+
+    const customers = getCustomers();
+
+    if (customers.some(customer => customer.email === email)) {
+        alert("This customer email already exists.");
+        return;
+    }
+
+    customers.push({
+        id: crypto.randomUUID(),
+        name,
+        email,
+        phone
+    });
+
+    saveCustomers(customers);
+
+    document.getElementById("customerForm").reset();
+
+    loadCustomers();
+
+    alert("Customer added successfully!");
+}
+
+function loadCustomers() {
+    const customers = getCustomers();
+
+    const list = document.getElementById("customersList");
+    const table = document.getElementById("customersTable");
+    const empty = document.getElementById("emptyCustomers");
+
+    if (!list || !table || !empty) return;
+
+    list.replaceChildren();
+
+    empty.style.display = customers.length ? "none" : "block";
+    table.style.display = customers.length ? "table" : "none";
+
+    customers.forEach(customer => {
+        const row = document.createElement("tr");
+
+        [customer.name, customer.email, customer.phone].forEach(value => {
+            const cell = document.createElement("td");
+            cell.textContent = value;
+            row.appendChild(cell);
+        });
+
+        const actionCell = document.createElement("td");
+        const deleteButton = document.createElement("button");
+
+        deleteButton.type = "button";
+        deleteButton.textContent = "Delete";
+
+        deleteButton.onclick = () => deleteCustomer(customer.id);
+
+        actionCell.appendChild(deleteButton);
+        row.appendChild(actionCell);
+
+        list.appendChild(row);
+    });
+
+    refreshOrderOptions();
+}
+
+function deleteCustomer(id) {
+    if (!confirm("Delete this customer?")) return;
+
+    const customers = getCustomers().filter(
+        customer => customer.id !== id
+    );
+
+    saveCustomers(customers);
+
+    loadCustomers();
+}
+
+
+// ======================================
+// SMART BUSINESS - ORDERS MANAGEMENT
+// ======================================
+
+function getOrders() {
+    const email = localStorage.getItem("smartBusinessCurrentUser");
+
+    if (!email) return [];
+
+    return JSON.parse(
+        localStorage.getItem("smartBusinessOrders_" + email) || "[]"
+    );
+}
+
+function saveOrders(orders) {
+    const email = localStorage.getItem("smartBusinessCurrentUser");
+
+    if (!email) return;
+
+    localStorage.setItem(
+        "smartBusinessOrders_" + email,
+        JSON.stringify(orders)
+    );
+}
+
+function refreshOrderOptions() {
+    const customerSelect = document.getElementById("orderCustomer");
+    const productSelect = document.getElementById("orderProduct");
+
+    if (!customerSelect || !productSelect) return;
+
+    customerSelect.replaceChildren();
+    productSelect.replaceChildren();
+
+    const customerDefault = document.createElement("option");
+    customerDefault.value = "";
+    customerDefault.textContent = "Choose Customer";
+    customerSelect.appendChild(customerDefault);
+
+    getCustomers().forEach(customer => {
+        const option = document.createElement("option");
+        option.value = customer.id;
+        option.textContent = customer.name;
+        customerSelect.appendChild(option);
+    });
+
+    const productDefault = document.createElement("option");
+    productDefault.value = "";
+    productDefault.textContent = "Choose Product";
+    productSelect.appendChild(productDefault);
+
+    getUserProducts().forEach(product => {
+        const option = document.createElement("option");
+        option.value = product.id;
+        option.textContent = product.name + " - " + product.price + " EGP";
+        productSelect.appendChild(option);
+    });
+}
+
+function addOrder(event) {
+    event.preventDefault();
+
+    const customerId = document.getElementById("orderCustomer").value;
+    const productId = document.getElementById("orderProduct").value;
+    const quantity = Number(document.getElementById("orderQuantity").value);
+
+    const customer = getCustomers().find(item => item.id === customerId);
+    const product = getUserProducts().find(item => item.id === productId);
+
+    if (!customer || !product) {
+        alert("Please select a valid customer and product.");
+        return;
+    }
+
+    if (!Number.isInteger(quantity) || quantity < 1) {
+        alert("Please enter a valid quantity.");
+        return;
+    }
+
+    if (quantity > product.quantity) {
+        alert("The requested quantity is greater than available stock.");
+        return;
+    }
+
+    const orders = getOrders();
+
+    orders.push({
+        id: crypto.randomUUID(),
+        customerName: customer.name,
+        productName: product.name,
+        quantity: quantity,
+        total: product.price * quantity,
+        status: "Pending",
+        createdAt: new Date().toISOString()
+    });
+
+    saveOrders(orders);
+
+    document.getElementById("orderForm").reset();
+
+    loadOrders();
+
+    alert("Order created successfully!");
+}
+
+function loadOrders() {
+    const orders = getOrders();
+
+    const list = document.getElementById("ordersList");
+    const table = document.getElementById("ordersTable");
+    const empty = document.getElementById("emptyOrders");
+
+    if (!list || !table || !empty) return;
+
+    list.replaceChildren();
+
+    empty.style.display = orders.length ? "none" : "block";
+    table.style.display = orders.length ? "table" : "none";
+
+    orders.forEach(order => {
+        const row = document.createElement("tr");
+
+        const values = [
+            order.customerName,
+            order.productName,
+            order.quantity,
+            order.total.toFixed(2) + " EGP"
+        ];
+
+        values.forEach(value => {
+            const cell = document.createElement("td");
+            cell.textContent = value;
+            row.appendChild(cell);
+        });
+
+        const statusCell = document.createElement("td");
+        const statusSelect = document.createElement("select");
+
+        ["Pending", "Processing", "Completed", "Cancelled"].forEach(status => {
+            const option = document.createElement("option");
+            option.value = status;
+            option.textContent = status;
+            statusSelect.appendChild(option);
+        });
+
+        statusSelect.value = order.status;
+        statusSelect.onchange = () => updateOrderStatus(order.id, statusSelect.value);
+
+        statusCell.appendChild(statusSelect);
+        row.appendChild(statusCell);
+
+        const actionCell = document.createElement("td");
+        const deleteButton = document.createElement("button");
+
+        deleteButton.type = "button";
+        deleteButton.textContent = "Delete";
+        deleteButton.onclick = () => deleteOrder(order.id);
+
+        actionCell.appendChild(deleteButton);
+        row.appendChild(actionCell);
+
+        list.appendChild(row);
+    });
+
+    refreshOrderOptions();
+}
+
+function updateOrderStatus(id, status) {
+    const allowed = ["Pending", "Processing", "Completed", "Cancelled"];
+
+    if (!allowed.includes(status)) return;
+
+    const orders = getOrders();
+    const order = orders.find(item => item.id === id);
+
+    if (!order) return;
+
+    order.status = status;
+
+    saveOrders(orders);
+}
+
+function deleteOrder(id) {
+    if (!confirm("Delete this order?")) return;
+
+    const orders = getOrders().filter(order => order.id !== id);
+
+    saveOrders(orders);
+
+    loadOrders();
+}
+
