@@ -142,3 +142,7 @@ function togglePassword() {
         passwordInput.type = "password";
     }
 }
+function logout() {
+    localStorage.removeItem("smartBusinessCurrentUser");
+    window.location.href = "login.html";
+}
