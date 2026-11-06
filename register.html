@@ -1,79 +1,40 @@
-
-
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Create Account - Smart Business</title>
-
     <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
-
     <div class="login-container">
-
-        <div class="logo">
-            Smart<span>Business</span>
-        </div>
-
-        <h1>Create Account</h1>
-
+        <div class="logo">Smart<span>Business</span></div>
+        <h1>Create account</h1>
         <p>Join Smart Business and grow your business.</p>
 
         <form id="registerForm" onsubmit="registerUser(event)">
-
             <label for="fullName">Full Name</label>
-
-            <input
-                type="text"
-                id="fullName"
-                name="fullName"
-                placeholder="Enter your full name"
-                required
-            >
+            <input type="text" id="fullName" placeholder="Enter your full name" autocomplete="name" required>
 
             <label for="registerEmail">Email Address</label>
-
-            <input
-                type="email"
-                id="registerEmail"
-                name="email"
-                placeholder="Enter your email"
-                required
-            >
+            <input type="email" id="registerEmail" placeholder="Enter your email" autocomplete="email" required>
 
             <label for="registerPassword">Password</label>
+            <input type="password" id="registerPassword" placeholder="At least 8 characters" minlength="8" autocomplete="new-password" required>
 
-            <input
-                type="password"
-                id="registerPassword"
-                name="password"
-                placeholder="Create a password"
-                minlength="8"
-                required
-            >
+            <label for="confirmPassword">Confirm Password</label>
+            <input type="password" id="confirmPassword" placeholder="Repeat your password" minlength="8" autocomplete="new-password" required>
+
+            <button type="button" class="login" aria-label="Show or hide password"
+                onclick="togglePassword('registerPassword'); togglePassword('confirmPassword')">
+                Show / Hide Password
+            </button>
 
             <label for="businessName">Business Name</label>
-
-            <input
-                type="text"
-                id="businessName"
-                name="businessName"
-                placeholder="Enter your business name"
-                required
-            >
+            <input type="text" id="businessName" placeholder="Enter your business name" required>
 
             <label for="businessType">Business Type</label>
-
-            <select
-                id="businessType"
-                name="businessType"
-                required
-            >
+            <select id="businessType" required>
                 <option value="">Select your business type</option>
                 <option value="restaurant">Restaurant</option>
                 <option value="clothing">Clothing Store</option>
@@ -82,24 +43,14 @@
                 <option value="other">Other Business</option>
             </select>
 
-            <button type="submit" class="signup">
-                Create My Account
-            </button>
+            <p id="formError" role="alert" hidden style="color:#f87171;font-size:14px"></p>
 
+            <button type="submit" class="signup">Create my account</button>
         </form>
 
-        <p class="back-home">
-            Already have an account?
-            <a href="login.html">Login</a>
-        </p>
-
-        <p class="back-home">
-            <a href="index.html">← Back to Home</a>
-        </p>
-
+        <p class="back-home">Already have an account? <a href="login.html">Log in</a></p>
+        <p class="back-home"><a href="index.html">← Back to Home</a></p>
     </div>
-
     <script src="script.js"></script>
-
 </body>
 </html>
