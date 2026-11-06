@@ -4,9 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Dashboard - Smart Business</title>
-<script>
-if(!localStorage.getItem("smartBusinessCurrentUser")) location.replace("login.html");
-</script>
 <style>
 :root{--bg:#080d1b;--panel:#111b31;--line:#263754;--p:#38bdf8;--s:#818cf8;--ok:#34d399;--warn:#fbbf24;--bad:#f87171;--text:#f1f5f9;--mute:#94a3b8}
 *{box-sizing:border-box;margin:0;padding:0}
@@ -42,6 +39,8 @@ table{width:100%;border-collapse:collapse;text-align:start}
 th,td{padding:12px;border-bottom:1px solid var(--line);white-space:nowrap}
 th{color:var(--mute);font-weight:500;font-size:13px}
 td .btn{margin-inline-end:6px}
+.pill{padding:3px 10px;border-radius:20px;font-size:12px;background:#1e293b}
+.pill.Completed{color:var(--ok)}.pill.Pending{color:var(--warn)}.pill.Cancelled{color:var(--bad)}.pill.Processing{color:var(--p)}
 .empty{color:var(--mute);padding:18px 0}
 section[hidden]{display:none}
 #toasts{position:fixed;bottom:20px;inset-inline-end:20px;display:grid;gap:8px;z-index:9}
@@ -126,16 +125,21 @@ dialog label{display:block;margin:12px 0 4px;color:var(--mute);font-size:13px}
   <div style="display:flex;gap:10px;margin-top:18px"><button class="btn">Save changes</button><button class="btn ghost" type="button" id="eCancel">Cancel</button></div>
 </form></dialog>
 
-<script>
-const $=id=>document.getElementById(id), ME=localStorage.getItem("smartBusinessCurrentUser");
-const K={p:"smartBusinessProducts_"+ME,c:"smartBusinessCustomers_"+ME,o:"smartBusinessOrders_"+ME};
-const get=k=>{try{return JSON.parse(localStorage.getItem(k)||"[]")}catch(e){return[]}};
-const set=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
+<script type="module">
+import { auth, db, onAuthStateChanged, signOut, doc, getDoc, setDoc } from "./firebase.js";
+const $=id=>document.getElementById(id);
+const user=await new Promise(r=>onAuthStateChanged(auth,u=>r(u)));
+if(!user){location.replace("login.html");throw new Error("not signed in")}
+const ref=doc(db,"users",user.uid);
+const D=(await getDoc(ref)).data()||{};
+const K={p:"products",c:"customers",o:"orders"};
+const get=k=>D[k]||[];
+const set=(k,v)=>{D[k]=v;setDoc(ref,{[k]:v},{merge:true}).catch(()=>toast("Could not save. Check your connection.",1))};
 const money=n=>(Math.round(n*100)/100).toLocaleString("en",{minimumFractionDigits:2,maximumFractionDigits:2})+" EGP";
 const TYPES={restaurant:"Restaurant",clothing:"Clothing Store",electronics:"Electronics Store",supermarket:"Supermarket",other:"Other Business"};
-const user=get("smartBusinessUsers").find(u=>u.email===ME);
-if(!user)location.replace("login.html");
-else{$("hello").textContent="Welcome, "+user.fullName;$("biz").textContent=user.businessName+" · "+(TYPES[user.businessType]||user.businessType)}
+const prof=D.profile||{};
+$("hello").textContent="Welcome, "+(prof.fullName||"");
+$("biz").textContent=(prof.businessName||"")+" · "+(TYPES[prof.businessType]||prof.businessType||"");
 
 function toast(m,err){const t=document.createElement("div");t.className="toast"+(err?" err":"");t.textContent=m;$("toasts").append(t);setTimeout(()=>t.remove(),2800)}
 function td(row,v){const c=document.createElement("td");c.textContent=v;row.append(c);return c}
@@ -143,12 +147,14 @@ function btn(txt,cls,fn){const b=document.createElement("button");b.type="button
 function csv(name,rows){const q=v=>'"'+String(v).replace(/"/g,'""')+'"';const blob=new Blob(["\ufeff"+rows.map(r=>r.map(q).join(",")).join("\n")],{type:"text/csv"});const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=name+".csv";a.click();URL.revokeObjectURL(a.href)}
 const match=(s,...f)=>f.join(" ").toLowerCase().includes(s.trim().toLowerCase());
 
+// Tabs
 document.querySelectorAll("[data-tab]").forEach(b=>b.onclick=()=>{
   document.querySelectorAll("[data-tab]").forEach(x=>x.setAttribute("aria-selected",x===b));
   document.querySelectorAll("main>section").forEach(s=>s.hidden=s.id!==b.dataset.tab);
 });
-$("logout").onclick=()=>{localStorage.removeItem("smartBusinessCurrentUser");location.href="login.html"};
+$("logout").onclick=async()=>{await signOut(auth);location.href="login.html"};
 
+// Overview
 function stats(){
   const P=get(K.p),C=get(K.c),O=get(K.o);
   $("sSales").textContent=money(O.filter(o=>o.status==="Completed").reduce((t,o)=>t+Number(o.total||0),0));
@@ -162,9 +168,10 @@ function stats(){
   low.forEach(p=>{const r=document.createElement("div");r.className="low";const a=document.createElement("span");a.textContent=p.name;const b=document.createElement("b");b.textContent=p.quantity+" left";b.style.color=p.quantity?"var(--warn)":"var(--bad)";r.append(a,b);$("lowList").append(r)});
 }
 
+// Products
 let editId=null;
 function renderP(){
-  const P=get(K.p).filter(p=>match($("pSearch").value,p.name));$("pBody").replaceChildren();$("pEmpty").hidden=!!P.length;
+  const P=get(K.p).filter(p=>match($("pSearch").value,p.name));$("pBody").replaceChildren();$("pEmpty").hidden=!!get(K.p).length&&!!P.length;
   P.forEach(p=>{const r=document.createElement("tr");td(r,p.name);td(r,money(p.price));td(r,p.quantity);const a=td(r,"");
     a.append(btn("Edit","",()=>{editId=p.id;$("eName").value=p.name;$("ePrice").value=p.price;$("eQty").value=p.quantity;$("dlg").showModal()}),
       btn("Delete","del",()=>{if(confirm("Delete "+p.name+"?")){set(K.p,get(K.p).filter(x=>x.id!==p.id));all();toast("Product deleted")}}));
@@ -176,8 +183,9 @@ $("eCancel").onclick=()=>$("dlg").close();
 $("pSearch").oninput=renderP;
 $("pCsv").onclick=()=>csv("products",[["Name","Price","Stock"],...get(K.p).map(p=>[p.name,p.price,p.quantity])]);
 
+// Customers
 function renderC(){
-  const C=get(K.c).filter(c=>match($("cSearch").value,c.name,c.email,c.phone));$("cBody").replaceChildren();$("cEmpty").hidden=!!C.length;
+  const all_=get(K.c),C=all_.filter(c=>match($("cSearch").value,c.name,c.email,c.phone));$("cBody").replaceChildren();$("cEmpty").hidden=!!C.length;
   C.forEach(c=>{const r=document.createElement("tr");td(r,c.name);td(r,c.email);td(r,c.phone);td(r,"").append(btn("Delete","del",()=>{
     if(get(K.o).some(o=>o.customerId===c.id&&o.status!=="Cancelled"))return toast("This customer has active orders. Cancel them first.",1);
     if(confirm("Delete "+c.name+"?")){set(K.c,get(K.c).filter(x=>x.id!==c.id));all();toast("Customer deleted")}}));$("cBody").append(r)});
@@ -187,6 +195,7 @@ $("cForm").onsubmit=e=>{e.preventDefault();const C=get(K.c),m=$("cEmail").value.
 $("cSearch").oninput=renderC;
 $("cCsv").onclick=()=>csv("customers",[["Name","Email","Phone"],...get(K.c).map(c=>[c.name,c.email,c.phone])]);
 
+// Orders
 function opts(){
   const cv=$("oCust").value,pv=$("oProd").value;
   const fill=(s,ph,list,txt)=>{s.replaceChildren(new Option(ph,""));list.forEach(x=>s.append(new Option(txt(x),x.id)))};
