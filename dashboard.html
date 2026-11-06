@@ -1,336 +1,222 @@
-
-
-
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Dashboard - Smart Business</title>
-
-    <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dashboard - Smart Business</title>
+<script>
+if(!localStorage.getItem("smartBusinessCurrentUser")) location.replace("login.html");
+</script>
+<style>
+:root{--bg:#080d1b;--panel:#111b31;--line:#263754;--p:#38bdf8;--s:#818cf8;--ok:#34d399;--warn:#fbbf24;--bad:#f87171;--text:#f1f5f9;--mute:#94a3b8}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font:15px/1.5 system-ui,Segoe UI,Arial,sans-serif;background:var(--bg);color:var(--text);display:flex;min-height:100vh}
+aside{width:230px;background:#0a1224;border-inline-end:1px solid var(--line);padding:22px 14px;display:flex;flex-direction:column;gap:6px;position:sticky;top:0;height:100vh}
+.logo{font-size:22px;font-weight:800;color:var(--p);padding:0 10px 18px}.logo span{color:#fff}
+.tab{background:none;border:0;color:var(--mute);text-align:start;padding:11px 12px;border-radius:10px;font:inherit;cursor:pointer}
+.tab:hover{color:#fff;background:#111b31}
+.tab[aria-selected=true]{background:linear-gradient(90deg,#2563eb33,#9333ea33);color:#fff;box-shadow:inset 3px 0 0 var(--p)}
+.sp{flex:1}
+main{flex:1;padding:28px;min-width:0;max-width:1200px}
+h1{font-size:26px}h2{font-size:18px;margin-bottom:14px}
+.sub{color:var(--mute);margin-bottom:22px}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:22px}
+.stat{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px}
+.stat small{color:var(--mute)}.stat b{display:block;font-size:26px;margin-top:4px}
+.box{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:20px;margin-bottom:22px}
+.two{display:grid;grid-template-columns:2fr 1fr;gap:16px}
+.bars{display:flex;align-items:flex-end;gap:10px;height:170px}
+.bar{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;gap:6px;font-size:12px;color:var(--mute)}
+.bar i{width:100%;background:linear-gradient(var(--p),#2563eb);border-radius:6px 6px 0 0;min-height:3px}
+.low{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--line)}
+form.row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px}
+input,select{background:var(--bg);color:#fff;border:1px solid var(--line);border-radius:8px;padding:11px;font:inherit;flex:1;min-width:130px}
+input:focus,select:focus,button:focus-visible{outline:2px solid var(--p);outline-offset:2px}
+.btn{background:linear-gradient(90deg,#2563eb,#9333ea);color:#fff;border:0;border-radius:8px;padding:11px 18px;font:inherit;font-weight:600;cursor:pointer}
+.btn.ghost{background:none;border:1px solid var(--line);color:var(--text);padding:7px 12px}
+.btn.del{border-color:#7f1d1d;color:var(--bad)}
+.tools{display:flex;gap:10px;margin-bottom:12px}
+.scroll{overflow-x:auto}
+table{width:100%;border-collapse:collapse;text-align:start}
+th,td{padding:12px;border-bottom:1px solid var(--line);white-space:nowrap}
+th{color:var(--mute);font-weight:500;font-size:13px}
+td .btn{margin-inline-end:6px}
+.empty{color:var(--mute);padding:18px 0}
+section[hidden]{display:none}
+#toasts{position:fixed;bottom:20px;inset-inline-end:20px;display:grid;gap:8px;z-index:9}
+.toast{background:#0f172a;border:1px solid var(--line);border-inline-start:4px solid var(--ok);padding:12px 16px;border-radius:8px}
+.toast.err{border-inline-start-color:var(--bad)}
+dialog{background:var(--panel);color:#fff;border:1px solid var(--line);border-radius:14px;padding:22px;width:min(380px,92vw);margin:auto}
+dialog::backdrop{background:#000a}
+dialog label{display:block;margin:12px 0 4px;color:var(--mute);font-size:13px}
+@media(max-width:850px){body{flex-direction:column}aside{width:100%;height:auto;position:static;flex-direction:row;overflow-x:auto;padding:10px}.logo,.sp{display:none}.grid{grid-template-columns:1fr 1fr}.two{grid-template-columns:1fr}main{padding:16px}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+</style>
 </head>
-
 <body>
-
-    <header>
-        <div class="logo">
-            Smart<span>Business</span>
-        </div>
-
-        <button class="login" onclick="logout()">
-            Logout
-        </button>
-    </header>
-
-    <main class="dashboard">
-
-        <h1>Business Dashboard</h1>
-
-        <p id="welcomeMessage">Welcome!</p>
-
-        <!-- DASHBOARD CARDS -->
-
-        <section class="service-container">
-
-            <div class="service-card">
-                <div class="service-icon">📦</div>
-                <h3>Products</h3>
-                <p id="productCount">0 Products</p>
-            </div>
-
-            <div class="service-card">
-                <div class="service-icon">👥</div>
-                <h3>Customers</h3>
-                <p id="customerCount">0 Customers</p>
-            </div>
-
-            <div class="service-card">
-                <div class="service-icon">🛒</div>
-
-
-<div class="service-card">
-    <div class="service-icon">💰</div>
-    <h3>Total Sales</h3>
-    <p id="salesCount">0 EGP</p>
-</div>
-                <h3>Orders</h3>
-                <p id="orderCount">0 Orders</p>
-            </div>
-
-        </section>
-
-        <!-- BUSINESS INFORMATION -->
-
-        <section class="about">
-
-            <h2>Business Information</h2>
-
-            <p id="businessName"></p>
-            <p id="businessType"></p>
-            <p id="userEmail"></p>
-
-        </section>
-
-
-        <!-- PRODUCT MANAGEMENT -->
-
-        <section class="about">
-
-            <h2>📦 Product Management</h2>
-
-            <p>Add and manage your business products.</p>
-
-            <form id="productForm" onsubmit="addProduct(event)">
-
-                <label for="productName">Product Name</label>
-
-                <input
-                    type="text"
-                    id="productName"
-                    placeholder="Enter product name"
-                    required
-                >
-
-                <label for="productPrice">Product Price</label>
-
-                <input
-                    type="number"
-                    id="productPrice"
-                    placeholder="Enter price"
-                    min="0.01"
-                    step="0.01"
-                    required
-                >
-
-                <label for="productQuantity">Product Quantity</label>
-
-                <input
-                    type="number"
-                    id="productQuantity"
-                    placeholder="Enter quantity"
-                    min="0"
-                    step="1"
-                    required
-                >
-
-                <button type="submit" class="signup">
-                    Add Product
-                </button>
-
-            </form>
-
-            <h2>My Products</h2>
-
-            <p id="emptyProducts">No products added yet.</p>
-
-            <div style="overflow-x:auto;">
-
-                <table id="productsTable"
-                    style="width:100%; text-align:left; display:none;">
-
-                    <thead>
-                        <tr>
-                            <th>Product</th>
-                            <th>Price</th>
-                            <th>Quantity</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-
-                    <tbody id="productsList"></tbody>
-
-                </table>
-
-            </div>
-
-        </section>
-
-
-        <!-- CUSTOMER MANAGEMENT -->
-
-        <section class="about">
-
-            <h2>👥 Customer Management</h2>
-
-            <p>Add and manage your business customers.</p>
-
-            <form id="customerForm" onsubmit="addCustomer(event)">
-
-                <label for="customerName">Customer Name</label>
-
-                <input
-                    type="text"
-                    id="customerName"
-                    placeholder="Enter customer name"
-                    required
-                >
-
-                <label for="customerEmail">Customer Email</label>
-
-                <input
-                    type="email"
-                    id="customerEmail"
-                    placeholder="Enter customer email"
-                    required
-                >
-
-                <label for="customerPhone">Phone Number</label>
-
-                <input
-                    type="tel"
-                    id="customerPhone"
-                    placeholder="Enter phone number"
-                    required
-                >
-
-                <button type="submit" class="signup">
-                    Add Customer
-                </button>
-
-            </form>
-
-            <h2>My Customers</h2>
-
-            <p id="emptyCustomers">No customers added yet.</p>
-
-            <div style="overflow-x:auto;">
-
-                <table id="customersTable"
-                    style="width:100%; text-align:left; display:none;">
-
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th>Phone</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-
-                    <tbody id="customersList"></tbody>
-
-                </table>
-
-            </div>
-
-        </section>
-
-
-        <!-- ORDER MANAGEMENT -->
-
-        <section class="about">
-
-            <h2>🛒 Orders Management</h2>
-
-            <p>Create and track customer orders.</p>
-
-            <form id="orderForm" onsubmit="addOrder(event)">
-
-                <label for="orderCustomer">Select Customer</label>
-
-                <select id="orderCustomer" required>
-                    <option value="">Choose Customer</option>
-                </select>
-
-                <label for="orderProduct">Select Product</label>
-
-                <select id="orderProduct" required>
-                    <option value="">Choose Product</option>
-                </select>
-
-                <label for="orderQuantity">Quantity</label>
-
-                <input
-                    type="number"
-                    id="orderQuantity"
-                    min="1"
-                    step="1"
-                    placeholder="Enter quantity"
-                    required
-                >
-
-                <button type="submit" class="signup">
-                    Create Order
-                </button>
-
-            </form>
-
-            <h2>My Orders</h2>
-
-            <p id="emptyOrders">No orders created yet.</p>
-
-            <div style="overflow-x:auto;">
-
-                <table id="ordersTable"
-                    style="width:100%; text-align:left; display:none;">
-
-                    <thead>
-                        <tr>
-                            <th>Customer</th>
-                            <th>Product</th>
-                            <th>Quantity</th>
-                            <th>Total</th>
-                            <th>Status</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-
-                    <tbody id="ordersList"></tbody>
-
-                </table>
-
-            </div>
-
-        </section>
-
-    </main>
-
-
-    <!-- JAVASCRIPT -->
-
-    <script src="script.js"></script>
-
-    <script>
-
-        const currentEmail =
-            localStorage.getItem("smartBusinessCurrentUser");
-
-        const users = JSON.parse(
-            localStorage.getItem("smartBusinessUsers") || "[]"
-        );
-
-        const user = users.find(
-            item => item.email === currentEmail
-        );
-
-        if (!user) {
-
-            window.location.href = "login.html";
-
-        } else {
-
-            document.getElementById("welcomeMessage").textContent =
-                "Welcome, " + user.fullName;
-
-            document.getElementById("businessName").textContent =
-                "Business Name: " + user.businessName;
-
-            document.getElementById("businessType").textContent =
-                "Business Type: " + user.businessType;
-
-            document.getElementById("userEmail").textContent =
-                "Email: " + user.email;
-
-            loadProducts();
-            loadCustomers();
-            loadOrders();
-
-        }
-
-    </script>
-
+<aside role="tablist" aria-label="Sections">
+  <div class="logo">Smart<span>Business</span></div>
+  <button class="tab" role="tab" data-tab="overview" aria-selected="true">Overview</button>
+  <button class="tab" role="tab" data-tab="products">Products</button>
+  <button class="tab" role="tab" data-tab="customers">Customers</button>
+  <button class="tab" role="tab" data-tab="orders">Orders</button>
+  <div class="sp"></div>
+  <button class="tab" id="logout">Log out</button>
+</aside>
+
+<main>
+<section id="overview">
+  <h1 id="hello">Welcome</h1>
+  <p class="sub" id="biz"></p>
+  <div class="grid" aria-live="polite">
+    <div class="stat"><small>Sales (completed)</small><b id="sSales">0</b></div>
+    <div class="stat"><small>Orders</small><b id="sOrders">0</b></div>
+    <div class="stat"><small>Customers</small><b id="sCust">0</b></div>
+    <div class="stat"><small>Products</small><b id="sProd">0</b></div>
+  </div>
+  <div class="two">
+    <div class="box"><h2>Sales, last 7 days</h2><div class="bars" id="chart"></div></div>
+    <div class="box"><h2>Low stock</h2><div id="lowList"></div></div>
+  </div>
+</section>
+
+<section id="products" hidden>
+  <h1>Products</h1><p class="sub">Add items and keep stock accurate.</p>
+  <form class="row" id="pForm">
+    <input id="pName" placeholder="Product name" required>
+    <input id="pPrice" type="number" min="0.01" step="0.01" placeholder="Price (EGP)" required>
+    <input id="pQty" type="number" min="0" step="1" placeholder="Stock" required>
+    <button class="btn">Add product</button>
+  </form>
+  <div class="box"><div class="tools"><input id="pSearch" placeholder="Search products"><button class="btn ghost" id="pCsv">Export CSV</button></div>
+  <div class="scroll"><table><thead><tr><th>Product</th><th>Price</th><th>Stock</th><th></th></tr></thead><tbody id="pBody"></tbody></table></div><p class="empty" id="pEmpty">No products yet. Add your first one above.</p></div>
+</section>
+
+<section id="customers" hidden>
+  <h1>Customers</h1><p class="sub">Everyone you sell to, in one list.</p>
+  <form class="row" id="cForm">
+    <input id="cName" placeholder="Full name" required>
+    <input id="cEmail" type="email" placeholder="Email" required>
+    <input id="cPhone" type="tel" placeholder="Phone" required>
+    <button class="btn">Add customer</button>
+  </form>
+  <div class="box"><div class="tools"><input id="cSearch" placeholder="Search customers"><button class="btn ghost" id="cCsv">Export CSV</button></div>
+  <div class="scroll"><table><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th></th></tr></thead><tbody id="cBody"></tbody></table></div><p class="empty" id="cEmpty">No customers yet.</p></div>
+</section>
+
+<section id="orders" hidden>
+  <h1>Orders</h1><p class="sub">Stock updates automatically when you create or cancel an order.</p>
+  <form class="row" id="oForm">
+    <select id="oCust" required></select><select id="oProd" required></select>
+    <input id="oQty" type="number" min="1" step="1" placeholder="Quantity" required>
+    <button class="btn">Create order</button>
+  </form>
+  <div class="box"><div class="tools"><input id="oSearch" placeholder="Search orders"><button class="btn ghost" id="oCsv">Export CSV</button></div>
+  <div class="scroll"><table><thead><tr><th>Customer</th><th>Product</th><th>Qty</th><th>Total</th><th>Status</th><th></th></tr></thead><tbody id="oBody"></tbody></table></div><p class="empty" id="oEmpty">No orders yet.</p></div>
+</section>
+</main>
+
+<div id="toasts" aria-live="polite"></div>
+<dialog id="dlg"><form method="dialog" id="eForm">
+  <h2>Edit product</h2>
+  <label for="eName">Name</label><input id="eName" required>
+  <label for="ePrice">Price</label><input id="ePrice" type="number" min="0.01" step="0.01" required>
+  <label for="eQty">Stock</label><input id="eQty" type="number" min="0" step="1" required>
+  <div style="display:flex;gap:10px;margin-top:18px"><button class="btn">Save changes</button><button class="btn ghost" type="button" id="eCancel">Cancel</button></div>
+</form></dialog>
+
+<script>
+const $=id=>document.getElementById(id), ME=localStorage.getItem("smartBusinessCurrentUser");
+const K={p:"smartBusinessProducts_"+ME,c:"smartBusinessCustomers_"+ME,o:"smartBusinessOrders_"+ME};
+const get=k=>{try{return JSON.parse(localStorage.getItem(k)||"[]")}catch(e){return[]}};
+const set=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
+const money=n=>(Math.round(n*100)/100).toLocaleString("en",{minimumFractionDigits:2,maximumFractionDigits:2})+" EGP";
+const TYPES={restaurant:"Restaurant",clothing:"Clothing Store",electronics:"Electronics Store",supermarket:"Supermarket",other:"Other Business"};
+const user=get("smartBusinessUsers").find(u=>u.email===ME);
+if(!user)location.replace("login.html");
+else{$("hello").textContent="Welcome, "+user.fullName;$("biz").textContent=user.businessName+" · "+(TYPES[user.businessType]||user.businessType)}
+
+function toast(m,err){const t=document.createElement("div");t.className="toast"+(err?" err":"");t.textContent=m;$("toasts").append(t);setTimeout(()=>t.remove(),2800)}
+function td(row,v){const c=document.createElement("td");c.textContent=v;row.append(c);return c}
+function btn(txt,cls,fn){const b=document.createElement("button");b.type="button";b.className="btn ghost "+cls;b.textContent=txt;b.onclick=fn;return b}
+function csv(name,rows){const q=v=>'"'+String(v).replace(/"/g,'""')+'"';const blob=new Blob(["\ufeff"+rows.map(r=>r.map(q).join(",")).join("\n")],{type:"text/csv"});const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=name+".csv";a.click();URL.revokeObjectURL(a.href)}
+const match=(s,...f)=>f.join(" ").toLowerCase().includes(s.trim().toLowerCase());
+
+document.querySelectorAll("[data-tab]").forEach(b=>b.onclick=()=>{
+  document.querySelectorAll("[data-tab]").forEach(x=>x.setAttribute("aria-selected",x===b));
+  document.querySelectorAll("main>section").forEach(s=>s.hidden=s.id!==b.dataset.tab);
+});
+$("logout").onclick=()=>{localStorage.removeItem("smartBusinessCurrentUser");location.href="login.html"};
+
+function stats(){
+  const P=get(K.p),C=get(K.c),O=get(K.o);
+  $("sSales").textContent=money(O.filter(o=>o.status==="Completed").reduce((t,o)=>t+Number(o.total||0),0));
+  $("sOrders").textContent=O.length;$("sCust").textContent=C.length;$("sProd").textContent=P.length;
+  const days=[...Array(7)].map((_,i)=>{const d=new Date();d.setDate(d.getDate()-6+i);return d});
+  const vals=days.map(d=>O.filter(o=>o.status==="Completed"&&new Date(o.createdAt).toDateString()===d.toDateString()).reduce((t,o)=>t+o.total,0));
+  const max=Math.max(...vals,1);$("chart").replaceChildren();
+  days.forEach((d,i)=>{const w=document.createElement("div");w.className="bar";const v=document.createElement("span");v.textContent=vals[i]?Math.round(vals[i]):"";const b=document.createElement("i");b.style.height=(vals[i]/max*100)+"%";const l=document.createElement("span");l.textContent=d.toLocaleDateString("en",{weekday:"short"});w.append(v,b,l);$("chart").append(w)});
+  const low=P.filter(p=>p.quantity<=5);$("lowList").replaceChildren();
+  if(!low.length){const e=document.createElement("p");e.className="empty";e.textContent="All products are well stocked.";$("lowList").append(e)}
+  low.forEach(p=>{const r=document.createElement("div");r.className="low";const a=document.createElement("span");a.textContent=p.name;const b=document.createElement("b");b.textContent=p.quantity+" left";b.style.color=p.quantity?"var(--warn)":"var(--bad)";r.append(a,b);$("lowList").append(r)});
+}
+
+let editId=null;
+function renderP(){
+  const P=get(K.p).filter(p=>match($("pSearch").value,p.name));$("pBody").replaceChildren();$("pEmpty").hidden=!!P.length;
+  P.forEach(p=>{const r=document.createElement("tr");td(r,p.name);td(r,money(p.price));td(r,p.quantity);const a=td(r,"");
+    a.append(btn("Edit","",()=>{editId=p.id;$("eName").value=p.name;$("ePrice").value=p.price;$("eQty").value=p.quantity;$("dlg").showModal()}),
+      btn("Delete","del",()=>{if(confirm("Delete "+p.name+"?")){set(K.p,get(K.p).filter(x=>x.id!==p.id));all();toast("Product deleted")}}));
+    $("pBody").append(r)});
+}
+$("pForm").onsubmit=e=>{e.preventDefault();const P=get(K.p);P.push({id:crypto.randomUUID(),name:$("pName").value.trim(),price:+$("pPrice").value,quantity:+$("pQty").value});set(K.p,P);e.target.reset();all();toast("Product added")};
+$("eForm").onsubmit=()=>{const P=get(K.p),p=P.find(x=>x.id===editId);if(p){p.name=$("eName").value.trim();p.price=+$("ePrice").value;p.quantity=+$("eQty").value;set(K.p,P);all();toast("Product updated")}};
+$("eCancel").onclick=()=>$("dlg").close();
+$("pSearch").oninput=renderP;
+$("pCsv").onclick=()=>csv("products",[["Name","Price","Stock"],...get(K.p).map(p=>[p.name,p.price,p.quantity])]);
+
+function renderC(){
+  const C=get(K.c).filter(c=>match($("cSearch").value,c.name,c.email,c.phone));$("cBody").replaceChildren();$("cEmpty").hidden=!!C.length;
+  C.forEach(c=>{const r=document.createElement("tr");td(r,c.name);td(r,c.email);td(r,c.phone);td(r,"").append(btn("Delete","del",()=>{
+    if(get(K.o).some(o=>o.customerId===c.id&&o.status!=="Cancelled"))return toast("This customer has active orders. Cancel them first.",1);
+    if(confirm("Delete "+c.name+"?")){set(K.c,get(K.c).filter(x=>x.id!==c.id));all();toast("Customer deleted")}}));$("cBody").append(r)});
+}
+$("cForm").onsubmit=e=>{e.preventDefault();const C=get(K.c),m=$("cEmail").value.trim().toLowerCase();if(C.some(c=>c.email===m))return toast("This customer email already exists.",1);
+  C.push({id:crypto.randomUUID(),name:$("cName").value.trim(),email:m,phone:$("cPhone").value.trim()});set(K.c,C);e.target.reset();all();toast("Customer added")};
+$("cSearch").oninput=renderC;
+$("cCsv").onclick=()=>csv("customers",[["Name","Email","Phone"],...get(K.c).map(c=>[c.name,c.email,c.phone])]);
+
+function opts(){
+  const cv=$("oCust").value,pv=$("oProd").value;
+  const fill=(s,ph,list,txt)=>{s.replaceChildren(new Option(ph,""));list.forEach(x=>s.append(new Option(txt(x),x.id)))};
+  fill($("oCust"),"Choose customer",get(K.c),c=>c.name);
+  fill($("oProd"),"Choose product",get(K.p),p=>p.name+" - "+money(p.price)+" (stock "+p.quantity+")");
+  $("oCust").value=cv;$("oProd").value=pv;
+}
+function renderO(){
+  const O=get(K.o).filter(o=>match($("oSearch").value,o.customerName,o.productName,o.status));$("oBody").replaceChildren();$("oEmpty").hidden=!!O.length;
+  O.slice().reverse().forEach(o=>{const r=document.createElement("tr");td(r,o.customerName);td(r,o.productName);td(r,o.quantity);td(r,money(o.total));
+    const sc=td(r,""),sel=document.createElement("select");sel.style.minWidth="120px";sel.setAttribute("aria-label","Order status");
+    ["Pending","Processing","Completed","Cancelled"].forEach(s=>sel.append(new Option(s,s)));sel.value=o.status;sel.onchange=()=>setStatus(o.id,sel.value);sc.append(sel);
+    td(r,"").append(btn("Delete","del",()=>delOrder(o.id)));$("oBody").append(r)});
+}
+function adjust(pid,d){const P=get(K.p),p=P.find(x=>x.id===pid);if(p){p.quantity+=d;set(K.p,P)}}
+$("oForm").onsubmit=e=>{e.preventDefault();const P=get(K.p),c=get(K.c).find(x=>x.id===$("oCust").value),p=P.find(x=>x.id===$("oProd").value),q=+$("oQty").value;
+  if(!c||!p)return toast("Choose a customer and a product.",1);if(!Number.isInteger(q)||q<1)return toast("Enter a valid quantity.",1);
+  if(q>p.quantity)return toast("Only "+p.quantity+" in stock.",1);
+  p.quantity-=q;set(K.p,P);const O=get(K.o);O.push({id:crypto.randomUUID(),customerId:c.id,customerName:c.name,productId:p.id,productName:p.name,quantity:q,total:Math.round(p.price*q*100)/100,status:"Pending",createdAt:new Date().toISOString()});
+  set(K.o,O);e.target.reset();all();toast("Order created")};
+function setStatus(id,s){const O=get(K.o),o=O.find(x=>x.id===id);if(!o)return;
+  if(o.status!=="Cancelled"&&s==="Cancelled")adjust(o.productId,o.quantity);
+  if(o.status==="Cancelled"&&s!=="Cancelled"){const p=get(K.p).find(x=>x.id===o.productId);if(!p||p.quantity<o.quantity){toast("Not enough stock to reactivate.",1);return all()}adjust(o.productId,-o.quantity)}
+  o.status=s;set(K.o,O);all();toast("Status: "+s)}
+function delOrder(id){if(!confirm("Delete this order?"))return;const O=get(K.o),o=O.find(x=>x.id===id);if(o&&o.status!=="Cancelled")adjust(o.productId,o.quantity);set(K.o,O.filter(x=>x.id!==id));all();toast("Order deleted")}
+$("oSearch").oninput=renderO;
+$("oCsv").onclick=()=>csv("orders",[["Customer","Product","Qty","Total","Status","Date"],...get(K.o).map(o=>[o.customerName,o.productName,o.quantity,o.total,o.status,o.createdAt])]);
+
+function all(){renderP();renderC();opts();renderO();stats()}
+if(user)all();
+</script>
 </body>
 </html>
