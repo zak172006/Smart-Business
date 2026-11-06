@@ -1,21 +1,22 @@
 
 
-
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#080d1b">
 
     <title>Smart Business | Business Management Platform</title>
 
     <meta name="description" content="Smart Business is an all-in-one platform for managing businesses, stores, products and customers.">
 
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📊</text></svg>">
     <link rel="stylesheet" href="style.css">
 </head>
 
-<body>
+<body id="top">
 
     <!-- HEADER -->
     <header>
@@ -23,8 +24,8 @@
             Smart<span>Business</span>
         </div>
 
-        <nav>
-            <a href="index.html">Home</a>
+        <nav aria-label="Main navigation">
+            <a href="#top">Home</a>
             <a href="#services">Services</a>
             <a href="#features">Features</a>
             <a href="#about">About</a>
@@ -32,12 +33,12 @@
         </nav>
 
         <div class="buttons">
-            <button class="login"
+            <button class="login" aria-label="Go to login page"
                 onclick="window.location.href='login.html'">
                 Login
             </button>
 
-            <button class="signup"
+            <button class="signup" aria-label="Create a new account"
                 onclick="window.location.href='register.html'">
                 Get Started
             </button>
@@ -51,9 +52,7 @@
         <!-- HERO SECTION -->
         <section class="hero">
 
-            <span class="tag">
-                SMART BUSINESS PLATFORM
-            </span>
+            <span class="tag">SMART BUSINESS PLATFORM</span>
 
             <h1>
                 Manage Your Business
@@ -84,9 +83,9 @@
 
 
         <!-- SERVICES SECTION -->
-        <section class="services" id="services">
+        <section class="services" id="services" aria-labelledby="servicesTitle">
 
-            <h2>Explore Our Services</h2>
+            <h2 id="servicesTitle">Explore Our Services</h2>
 
             <p class="services-text">
                 Everything Your Business Needs In One Place
@@ -95,50 +94,24 @@
             <div class="service-container">
 
                 <div class="service-card">
-                    <div class="service-icon">🍔</div>
-
+                    <div class="service-icon" aria-hidden="true">🍔</div>
                     <h3>Restaurants</h3>
-
-                    <p>
-                        Manage restaurant menus,
-                        orders and customers easily.
-                    </p>
-
-                    <a href="register.html">
-                        Get Started →
-                    </a>
+                    <p>Manage restaurant menus, orders and customers easily.</p>
+                    <a href="register.html">Get Started →</a>
                 </div>
 
-
                 <div class="service-card">
-                    <div class="service-icon">👕</div>
-
+                    <div class="service-icon" aria-hidden="true">👕</div>
                     <h3>Clothing Stores</h3>
-
-                    <p>
-                        Display clothing products
-                        and manage your online store.
-                    </p>
-
-                    <a href="register.html">
-                        Get Started →
-                    </a>
+                    <p>Display clothing products and manage your online store.</p>
+                    <a href="register.html">Get Started →</a>
                 </div>
 
-
                 <div class="service-card">
-                    <div class="service-icon">🛒</div>
-
+                    <div class="service-icon" aria-hidden="true">🛒</div>
                     <h3>Online Shopping</h3>
-
-                    <p>
-                        Sell products, manage orders
-                        and organize your sales.
-                    </p>
-
-                    <a href="register.html">
-                        Get Started →
-                    </a>
+                    <p>Sell products, manage orders and organize your sales.</p>
+                    <a href="register.html">Get Started →</a>
                 </div>
 
             </div>
@@ -147,9 +120,9 @@
 
 
         <!-- FEATURES SECTION -->
-        <section id="features" class="features">
+        <section id="features" class="features" aria-labelledby="featuresTitle">
 
-            <h2>Powerful Business Features</h2>
+            <h2 id="featuresTitle">Powerful Business Features</h2>
 
             <p>
                 Everything you need to control your business
@@ -159,30 +132,21 @@
             <div class="service-container">
 
                 <div class="service-card">
-                    <div class="service-icon">📊</div>
+                    <div class="service-icon" aria-hidden="true">📊</div>
                     <h3>Business Dashboard</h3>
-                    <p>
-                        Monitor your business activities
-                        and track your performance.
-                    </p>
+                    <p>Track sales, orders and low stock in one place.</p>
                 </div>
 
                 <div class="service-card">
-                    <div class="service-icon">📦</div>
+                    <div class="service-icon" aria-hidden="true">📦</div>
                     <h3>Product Management</h3>
-                    <p>
-                        Add, edit and organize
-                        your products easily.
-                    </p>
+                    <p>Add, edit and organize your products easily.</p>
                 </div>
 
                 <div class="service-card">
-                    <div class="service-icon">👥</div>
+                    <div class="service-icon" aria-hidden="true">👥</div>
                     <h3>Customer Management</h3>
-                    <p>
-                        Organize customer information
-                        and improve customer service.
-                    </p>
+                    <p>Organize customer information and create orders fast.</p>
                 </div>
 
             </div>
@@ -191,16 +155,15 @@
 
 
         <!-- ABOUT SECTION -->
-        <section id="about" class="about">
+        <section id="about" class="about" aria-labelledby="aboutTitle">
 
-            <h2>About Smart Business</h2>
+            <h2 id="aboutTitle">About Smart Business</h2>
 
             <p>
                 Smart Business is a multi-activity business
                 management platform designed to help companies,
                 restaurants and online stores manage their
                 operations from one place.
-
                 Our goal is to make business management
                 easier, faster and smarter.
             </p>
@@ -209,13 +172,11 @@
 
 
         <!-- CONTACT SECTION -->
-        <section id="contact" class="contact">
+        <section id="contact" class="contact" aria-labelledby="contactTitle">
 
-            <h2>Contact Us</h2>
+            <h2 id="contactTitle">Contact Us</h2>
 
-            <p>
-                We are here to help your business grow.
-            </p>
+            <p>We are here to help your business grow.</p>
 
             <a href="mailto:contact@smartbusiness.com">
                 Contact Our Team
@@ -233,19 +194,11 @@
             Smart<span>Business</span>
         </div>
 
-        <p>
-            Smart Business © 2026.
-            All Rights Reserved.
-        </p>
+        <p>Smart Business © 2026. All Rights Reserved.</p>
 
-        <p>
-            Manage Your Business The Smart Way.
-        </p>
+        <p>Manage Your Business The Smart Way.</p>
 
     </footer>
-
-
-    <script src="script.js"></script>
 
 </body>
 </html>
