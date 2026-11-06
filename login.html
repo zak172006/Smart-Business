@@ -1,76 +1,36 @@
-
-
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Login - Smart Business</title>
-
     <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
-
     <div class="login-container">
-
-        <div class="logo">
-            Smart<span>Business</span>
-        </div>
-
-        <h1>Welcome Back!</h1>
-
-        <p>Login to your Smart Business account</p>
+        <div class="logo">Smart<span>Business</span></div>
+        <h1>Welcome back</h1>
+        <p>Log in to your Smart Business account.</p>
 
         <form id="loginForm" onsubmit="handleLogin(event)">
-
             <label for="email">Email Address</label>
-
-            <input
-                type="email"
-                id="email"
-                name="email"
-                placeholder="Enter your email"
-                autocomplete="email"
-                required
-            >
+            <input type="email" id="email" placeholder="Enter your email" autocomplete="email" required>
 
             <label for="password">Password</label>
+            <input type="password" id="password" placeholder="Enter your password" autocomplete="current-password" required>
 
-            <input
-                type="password"
-                id="password"
-                name="password"
-                placeholder="Enter your password"
-                autocomplete="current-password"
-                required
-            >
-
-            <button type="button" class="login"
-                onclick="togglePassword()">
+            <button type="button" class="login" aria-label="Show or hide password" onclick="togglePassword('password')">
                 Show / Hide Password
             </button>
 
-            <button type="submit" class="signup">
-                Login to Account
-            </button>
+            <p id="formError" role="alert" hidden style="color:#f87171;font-size:14px"></p>
 
+            <button type="submit" class="signup">Log in</button>
         </form>
 
-        <p class="back-home">
-            Don't have an account?
-            <a href="register.html">Create Account</a>
-        </p>
-
-        <p class="back-home">
-            <a href="index.html">← Back to Home</a>
-        </p>
-
+        <p class="back-home">Don't have an account? <a href="register.html">Create account</a></p>
+        <p class="back-home"><a href="index.html">← Back to Home</a></p>
     </div>
-
     <script src="script.js"></script>
-
 </body>
 </html>
