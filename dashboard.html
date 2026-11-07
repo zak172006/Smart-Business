@@ -3,247 +3,219 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Dashboard - Smart Business</title>
+<meta name="theme-color" content="#080d1b">
+<title>Smart Business</title>
 <style>
-:root{--bg:#080d1b;--panel:#111b31;--line:#263754;--p:#38bdf8;--s:#818cf8;--ok:#34d399;--warn:#fbbf24;--bad:#f87171;--text:#f1f5f9;--mute:#94a3b8}
+:root{--bg:#080d1b;--panel:#111b31;--line:#263754;--p:#38bdf8;--ok:#34d399;--warn:#fbbf24;--bad:#f87171;--mute:#94a3b8}
 *{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
-body{font:15px/1.5 system-ui,Segoe UI,Arial,sans-serif;background:var(--bg);color:var(--text);display:flex;min-height:100vh}
-aside{width:230px;background:#0a1224;border-inline-end:1px solid var(--line);padding:22px 14px;display:flex;flex-direction:column;gap:6px;position:sticky;top:0;height:100vh}
-.logo{font-size:22px;font-weight:800;color:var(--p);padding:0 10px 18px}.logo span{color:#fff}
-.tab{background:none;border:0;color:var(--mute);text-align:start;padding:11px 12px;border-radius:10px;font:inherit;cursor:pointer}
-.tab:hover{color:#fff;background:#111b31}
-.tab[aria-selected=true]{background:linear-gradient(90deg,#2563eb33,#9333ea33);color:#fff;box-shadow:inset 3px 0 0 var(--p)}
-.sp{flex:1}
-main{flex:1;padding:28px;min-width:0;max-width:1200px}
-h1{font-size:26px}h2{font-size:18px;margin-bottom:14px}
-.sub{color:var(--mute);margin-bottom:22px}
-.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:22px}
-.stat{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px}
-.stat small{color:var(--mute)}.stat b{display:block;font-size:26px;margin-top:4px}
-.box{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:20px;margin-bottom:22px}
-.two{display:grid;grid-template-columns:2fr 1fr;gap:16px}
-.bars{display:flex;align-items:flex-end;gap:10px;height:170px}
-.bar{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;gap:6px;font-size:12px;color:var(--mute)}
-.bar i{width:100%;background:linear-gradient(var(--p),#2563eb);border-radius:6px 6px 0 0;min-height:3px}
-.low{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--line)}
-form.row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px}
-input,select{background:var(--bg);color:#fff;border:1px solid var(--line);border-radius:8px;padding:11px;font:inherit;flex:1;min-width:130px}
-input:focus,select:focus,button:focus-visible{outline:2px solid var(--p);outline-offset:2px}
-.btn{background:linear-gradient(90deg,#2563eb,#9333ea);color:#fff;border:0;border-radius:8px;padding:11px 18px;font:inherit;font-weight:600;cursor:pointer}
-.btn.ghost{background:none;border:1px solid var(--line);color:var(--text);padding:7px 12px}
-.btn.del{border-color:#7f1d1d;color:var(--bad)}
-.tools{display:flex;gap:10px;margin-bottom:12px}
-.scroll{overflow-x:auto}
-table{width:100%;border-collapse:collapse;text-align:start}
-th,td{padding:12px;border-bottom:1px solid var(--line);white-space:nowrap}
-th{color:var(--mute);font-weight:500;font-size:13px}
-td .btn{margin-inline-end:6px}
-.pill{padding:3px 10px;border-radius:20px;font-size:12px;background:#1e293b}
-.pill.Completed{color:var(--ok)}.pill.Pending{color:var(--warn)}.pill.Cancelled{color:var(--bad)}.pill.Processing{color:var(--p)}
-.empty{color:var(--mute);padding:18px 0}
-section[hidden]{display:none}
-#toasts{position:fixed;bottom:20px;inset-inline-end:20px;display:grid;gap:8px;z-index:9}
-.toast{background:#0f172a;border:1px solid var(--line);border-inline-start:4px solid var(--ok);padding:12px 16px;border-radius:8px}
+body{font:17px/1.5 system-ui,Segoe UI,Arial,sans-serif;background:var(--bg);color:#f1f5f9;padding:64px 16px 96px;max-width:720px;margin:auto}
+h1{font-size:24px;margin-bottom:16px}h2{font-size:19px;margin-bottom:10px}
+.mute{color:var(--mute);font-size:15px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px;margin-bottom:14px}
+.top{position:fixed;top:0;inset-inline:0;background:#080d1bf2;border-bottom:1px solid var(--line);padding:12px 16px;display:flex;justify-content:space-between;align-items:center;z-index:5}
+.top b{color:var(--p);max-width:45%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.out{background:none;border:0;color:var(--mute);font:inherit;font-size:14px;cursor:pointer;margin-inline-end:78px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+.stat{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px;text-align:center}
+.stat small{color:var(--mute);font-size:13px;display:block}.stat b{font-size:20px}
+.btn{display:block;width:100%;min-height:50px;border-radius:12px;border:0;background:linear-gradient(90deg,#2563eb,#9333ea);color:#fff;font-weight:700;font-size:17px;font-family:inherit;cursor:pointer;margin-top:10px;text-align:center;text-decoration:none;padding:13px}
+.btn.wa{background:#16a34a}.btn.ghost{background:none;border:1px solid var(--line);font-weight:600}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+input,select{width:100%;min-height:48px;background:var(--bg);color:#fff;border:1px solid var(--line);border-radius:12px;padding:12px;font:inherit;margin-top:10px}
+:focus-visible{outline:2px solid var(--p);outline-offset:2px}
+.item{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.acts{display:flex;gap:6px}
+.sm{min-height:40px;padding:0 14px;border-radius:10px;border:1px solid var(--line);background:none;color:#fff;font:inherit;font-size:15px;cursor:pointer}
+.sm.del{color:var(--bad);border-color:#7f1d1d}
+.row{display:flex;justify-content:space-between;gap:10px}
+select.st{font-weight:700}.st.Pending{color:var(--warn)}.st.Processing{color:var(--p)}.st.Completed{color:var(--ok)}.st.Cancelled{color:var(--bad)}
+details summary{cursor:pointer;font-weight:700;min-height:44px;display:flex;align-items:center}
+ol{padding-inline-start:22px;margin-bottom:6px}li{margin:6px 0}
+#qr{display:block;margin:14px auto 0;border-radius:10px;background:#fff;padding:6px}
+.bar{position:fixed;bottom:0;inset-inline:0;background:#0a1224;border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(4,1fr);z-index:5}
+.bar button{background:none;border:0;color:var(--mute);font-weight:600;font-size:13px;font-family:inherit;padding:10px 0 12px;cursor:pointer}
+.bar button i{display:block;font-style:normal;font-size:22px}.bar button.on{color:var(--p)}
+#toasts{position:fixed;bottom:84px;inset-inline:16px;display:grid;gap:8px;z-index:9}
+.toast{background:#0f172a;border:1px solid var(--line);border-inline-start:4px solid var(--ok);padding:12px 16px;border-radius:10px}
 .toast.err{border-inline-start-color:var(--bad)}
-dialog{background:var(--panel);color:#fff;border:1px solid var(--line);border-radius:14px;padding:22px;width:min(380px,92vw);margin:auto}
+dialog{background:var(--panel);color:#fff;border:1px solid var(--line);border-radius:16px;padding:20px;width:min(380px,92vw);margin:auto}
 dialog::backdrop{background:#000a}
-dialog label{display:block;margin:12px 0 4px;color:var(--mute);font-size:13px}
-@media(max-width:850px){body{flex-direction:column}aside{width:100%;height:auto;position:static;flex-direction:row;overflow-x:auto;padding:10px}.logo,.sp{display:none}.grid{grid-template-columns:1fr 1fr}.two{grid-template-columns:1fr}main{padding:16px}}
-@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+[hidden]{display:none!important}
 </style>
 </head>
 <body>
-<aside role="tablist" aria-label="Sections">
-  <div class="logo">Smart<span>Business</span></div>
-  <button class="tab" role="tab" data-tab="overview" aria-selected="true">Overview</button>
-  <button class="tab" role="tab" data-tab="products">Products</button>
-  <button class="tab" role="tab" data-tab="customers">Customers</button>
-  <button class="tab" role="tab" data-tab="orders">Orders</button>
-  <div class="sp"></div>
-  <button class="tab" id="logout">Log out</button>
-</aside>
+<header class="top"><b id="bizName"></b><button class="out" id="logout">Log out</button></header>
 
 <main>
-<section id="overview">
-  <h1 id="hello">Welcome</h1>
-  <p class="sub" id="biz"></p>
-  <div class="grid" aria-live="polite">
-    <div class="stat"><small>Sales (completed)</small><b id="sSales">0</b></div>
-    <div class="stat"><small>Orders</small><b id="sOrders">0</b></div>
-    <div class="stat"><small>Customers</small><b id="sCust">0</b></div>
-    <div class="stat"><small>Products</small><b id="sProd">0</b></div>
+<section id="home">
+  <h1><span>Welcome</span>, <span id="uname"></span></h1>
+  <div class="card" id="steps" hidden>
+    <h2>Get your shop online in 3 easy steps</h2>
+    <ol><li>Add your products (name, price, how many you have)</li><li>Share your menu link with customers</li><li>Receive orders here and follow them</li></ol>
+    <button class="btn" data-go="products">Add my first product</button>
   </div>
-  <div class="box"><h2>Your online menu</h2><p class="sub" style="margin-bottom:12px">Share this link or QR code. Customers order without an account, and their orders appear in Orders.</p><div class="tools"><input id="menuLink" readonly aria-label="Menu link"><button class="btn" id="copyMenu" type="button">Copy link</button></div><img id="qr" alt="QR code for your menu" width="160" height="160" style="margin-top:8px;border-radius:8px;background:#fff;padding:6px"></div>
-  <div class="two">
-    <div class="box"><h2>Sales, last 7 days</h2><div class="bars" id="chart"></div></div>
-    <div class="box"><h2>Low stock</h2><div id="lowList"></div></div>
+  <div class="stats">
+    <div class="stat"><small>New orders</small><b id="sNew">0</b></div>
+    <div class="stat"><small>Today's sales</small><b id="sToday">0</b></div>
+    <div class="stat"><small>Low stock</small><b id="sLow">0</b></div>
   </div>
-</section>
-
-<section id="products" hidden>
-  <h1>Products</h1><p class="sub">Add items and keep stock accurate.</p>
-  <form class="row" id="pForm">
-    <input id="pName" placeholder="Product name" required>
-    <input id="pPrice" type="number" min="0.01" step="0.01" placeholder="Price (EGP)" required>
-    <input id="pQty" type="number" min="0" step="1" placeholder="Stock" required>
-    <button class="btn">Add product</button>
-  </form>
-  <div class="box"><div class="tools"><input id="pSearch" placeholder="Search products"><button class="btn ghost" id="pCsv">Export CSV</button></div>
-  <div class="scroll"><table><thead><tr><th>Product</th><th>Price</th><th>Stock</th><th></th></tr></thead><tbody id="pBody"></tbody></table></div><p class="empty" id="pEmpty">No products yet. Add your first one above.</p></div>
-</section>
-
-<section id="customers" hidden>
-  <h1>Customers</h1><p class="sub">Everyone you sell to, in one list.</p>
-  <form class="row" id="cForm">
-    <input id="cName" placeholder="Full name" required>
-    <input id="cEmail" type="email" placeholder="Email" required>
-    <input id="cPhone" type="tel" placeholder="Phone" required>
-    <button class="btn">Add customer</button>
-  </form>
-  <div class="box"><div class="tools"><input id="cSearch" placeholder="Search customers"><button class="btn ghost" id="cCsv">Export CSV</button></div>
-  <div class="scroll"><table><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th></th></tr></thead><tbody id="cBody"></tbody></table></div><p class="empty" id="cEmpty">No customers yet.</p></div>
+  <div class="card">
+    <h2>Your online menu</h2>
+    <p class="mute">Customers open this link, choose items and send an order. No account needed.</p>
+    <button class="btn wa" id="wa">Share on WhatsApp</button>
+    <div class="two"><button class="btn ghost" id="copy">Copy link</button><a class="btn ghost" id="open" target="_blank" rel="noopener">Open menu</a></div>
+    <img id="qr" alt="QR" width="150" height="150">
+  </div>
 </section>
 
 <section id="orders" hidden>
-  <h1>Orders</h1><p class="sub">Stock updates automatically when you create or cancel an order.</p>
-  <form class="row" id="oForm">
-    <select id="oCust" required></select><select id="oProd" required></select>
-    <input id="oQty" type="number" min="1" step="1" placeholder="Quantity" required>
-    <button class="btn">Create order</button>
-  </form>
-  <div class="box"><div class="tools"><input id="oSearch" placeholder="Search orders"><button class="btn ghost" id="oCsv">Export CSV</button></div>
-  <div class="scroll"><table><thead><tr><th>Customer</th><th>Product</th><th>Qty</th><th>Total</th><th>Status</th><th></th></tr></thead><tbody id="oBody"></tbody></table></div><p class="empty" id="oEmpty">No orders yet.</p></div>
+  <h1>Orders</h1>
+  <p class="mute" id="oEmpty" style="margin-bottom:14px">No orders yet. Share your menu link to get your first order.</p>
+  <div id="oList"></div>
+  <details class="card"><summary>Create an order manually</summary>
+    <form id="oForm">
+      <input id="oName" placeholder="Customer name" required>
+      <select id="oProd" required></select>
+      <input id="oQty" type="number" min="1" step="1" placeholder="Quantity" required>
+      <button class="btn">Create order</button>
+    </form>
+  </details>
+</section>
+
+<section id="products" hidden>
+  <h1>Products</h1>
+  <details class="card" id="addBox" open><summary>Add a product</summary>
+    <form id="pForm">
+      <input id="pName" placeholder="Product name" required>
+      <input id="pPrice" type="number" min="0.01" step="0.01" placeholder="Price (EGP)" required>
+      <input id="pQty" type="number" min="0" step="1" placeholder="How many?" required>
+      <button class="btn">Add</button>
+    </form>
+  </details>
+  <p class="mute" id="pEmpty">No products yet. Add your first one above.</p>
+  <div id="pList"></div>
+</section>
+
+<section id="customers" hidden>
+  <h1>Customers</h1>
+  <p class="mute" id="cEmpty">No customers yet. They are added automatically from orders.</p>
+  <div id="cList"></div>
 </section>
 </main>
 
+<nav class="bar" aria-label="Sections">
+  <button data-tab="home" class="on"><i>🏠</i>Home</button>
+  <button data-tab="orders"><i>🛒</i>Orders</button>
+  <button data-tab="products"><i>📦</i>Products</button>
+  <button data-tab="customers"><i>👥</i>Customers</button>
+</nav>
 <div id="toasts" aria-live="polite"></div>
+
 <dialog id="dlg"><form method="dialog" id="eForm">
   <h2>Edit product</h2>
-  <label for="eName">Name</label><input id="eName" required>
-  <label for="ePrice">Price</label><input id="ePrice" type="number" min="0.01" step="0.01" required>
-  <label for="eQty">Stock</label><input id="eQty" type="number" min="0" step="1" required>
-  <div style="display:flex;gap:10px;margin-top:18px"><button class="btn">Save changes</button><button class="btn ghost" type="button" id="eCancel">Cancel</button></div>
+  <input id="eName" placeholder="Name" required>
+  <input id="ePrice" type="number" min="0.01" step="0.01" placeholder="Price" required>
+  <input id="eQty" type="number" min="0" step="1" placeholder="Stock" required>
+  <button class="btn">Save</button><button class="btn ghost" type="button" id="eCancel">Cancel</button>
 </form></dialog>
 
+<script src="i18n.js"></script>
 <script type="module">
 import { auth, db, onAuthStateChanged, signOut, doc, getDoc, setDoc, collection, onSnapshot, deleteDoc } from "./firebase.js";
-const $=id=>document.getElementById(id);
-const user=await new Promise(r=>onAuthStateChanged(auth,u=>r(u)));
-if(!user){location.replace("login.html");throw new Error("not signed in")}
+const $=id=>document.getElementById(id), T=s=>window.t(s);
+const h=(t,c,x)=>{const e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e};
+const user=await new Promise(r=>onAuthStateChanged(auth,r));
+if(!user){location.replace("login.html");throw 0}
 const ref=doc(db,"users",user.uid);
 const D=(await getDoc(ref)).data()||{};
-const K={p:"products",c:"customers",o:"orders"};
 const get=k=>D[k]||[];
 const set=(k,v)=>{D[k]=v;setDoc(ref,{[k]:v},{merge:true}).catch(()=>toast("Could not save. Check your connection.",1));if(k==="products")publishMenu()};
-const money=n=>(Math.round(n*100)/100).toLocaleString("en",{minimumFractionDigits:2,maximumFractionDigits:2})+" EGP";
-const TYPES={restaurant:"Restaurant",clothing:"Clothing Store",electronics:"Electronics Store",supermarket:"Supermarket",other:"Other Business"};
 const prof=D.profile||{};
-$("hello").textContent="Welcome, "+(prof.fullName||"");
-$("biz").textContent=(prof.businessName||"")+" · "+(TYPES[prof.businessType]||prof.businessType||"");
+const money=n=>(Math.round(n*100)/100).toLocaleString("en")+" EGP";
+$("bizName").textContent=prof.businessName||"Smart Business";$("uname").textContent=prof.fullName||"";
+function toast(m,err){const e=h("div","toast"+(err?" err":""),m);$("toasts").append(e);setTimeout(()=>e.remove(),2800)}
+function btn(txt,fn,cls){const b=h("button","sm "+(cls||""),txt);b.type="button";b.onclick=fn;return b}
 
-function toast(m,err){const t=document.createElement("div");t.className="toast"+(err?" err":"");t.textContent=m;$("toasts").append(t);setTimeout(()=>t.remove(),2800)}
-function td(row,v){const c=document.createElement("td");c.textContent=v;row.append(c);return c}
-function btn(txt,cls,fn){const b=document.createElement("button");b.type="button";b.className="btn ghost "+cls;b.textContent=txt;b.onclick=fn;return b}
-function csv(name,rows){const q=v=>'"'+String(v).replace(/"/g,'""')+'"';const blob=new Blob(["\ufeff"+rows.map(r=>r.map(q).join(",")).join("\n")],{type:"text/csv"});const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=name+".csv";a.click();URL.revokeObjectURL(a.href)}
-const match=(s,...f)=>f.join(" ").toLowerCase().includes(s.trim().toLowerCase());
-
-// Tabs
-document.querySelectorAll("[data-tab]").forEach(b=>b.onclick=()=>{
-  document.querySelectorAll("[data-tab]").forEach(x=>x.setAttribute("aria-selected",x===b));
-  document.querySelectorAll("main>section").forEach(s=>s.hidden=s.id!==b.dataset.tab);
-});
+function show(id){document.querySelectorAll("main>section").forEach(s=>s.hidden=s.id!==id);document.querySelectorAll("[data-tab]").forEach(b=>b.classList.toggle("on",b.dataset.tab===id));scrollTo(0,0)}
+document.querySelectorAll("[data-tab],[data-go]").forEach(b=>b.onclick=()=>show(b.dataset.tab||b.dataset.go));
 $("logout").onclick=async()=>{await signOut(auth);location.href="login.html"};
 
-// Overview
-function stats(){
-  const P=get(K.p),C=get(K.c),O=get(K.o);
-  $("sSales").textContent=money(O.filter(o=>o.status==="Completed").reduce((t,o)=>t+Number(o.total||0),0));
-  $("sOrders").textContent=O.length;$("sCust").textContent=C.length;$("sProd").textContent=P.length;
-  const days=[...Array(7)].map((_,i)=>{const d=new Date();d.setDate(d.getDate()-6+i);return d});
-  const vals=days.map(d=>O.filter(o=>o.status==="Completed"&&new Date(o.createdAt).toDateString()===d.toDateString()).reduce((t,o)=>t+o.total,0));
-  const max=Math.max(...vals,1);$("chart").replaceChildren();
-  days.forEach((d,i)=>{const w=document.createElement("div");w.className="bar";const v=document.createElement("span");v.textContent=vals[i]?Math.round(vals[i]):"";const b=document.createElement("i");b.style.height=(vals[i]/max*100)+"%";const l=document.createElement("span");l.textContent=d.toLocaleDateString("en",{weekday:"short"});w.append(v,b,l);$("chart").append(w)});
-  const low=P.filter(p=>p.quantity<=5);$("lowList").replaceChildren();
-  if(!low.length){const e=document.createElement("p");e.className="empty";e.textContent="All products are well stocked.";$("lowList").append(e)}
-  low.forEach(p=>{const r=document.createElement("div");r.className="low";const a=document.createElement("span");a.textContent=p.name;const b=document.createElement("b");b.textContent=p.quantity+" left";b.style.color=p.quantity?"var(--warn)":"var(--bad)";r.append(a,b);$("lowList").append(r)});
+function renderH(){
+  const P=get("products"),O=get("orders"),d=new Date().toDateString();
+  $("steps").hidden=P.length>0;
+  $("sNew").textContent=O.filter(o=>o.status==="Pending").length;
+  $("sToday").textContent=money(O.filter(o=>o.status==="Completed"&&new Date(o.createdAt).toDateString()===d).reduce((s,o)=>s+o.total,0));
+  $("sLow").textContent=P.filter(p=>p.quantity<=5).length;
 }
-
-// Products
 let editId=null;
 function renderP(){
-  const P=get(K.p).filter(p=>match($("pSearch").value,p.name));$("pBody").replaceChildren();$("pEmpty").hidden=!!get(K.p).length&&!!P.length;
-  P.forEach(p=>{const r=document.createElement("tr");td(r,p.name);td(r,money(p.price));td(r,p.quantity);const a=td(r,"");
-    a.append(btn("Edit","",()=>{editId=p.id;$("eName").value=p.name;$("ePrice").value=p.price;$("eQty").value=p.quantity;$("dlg").showModal()}),
-      btn("Delete","del",()=>{if(confirm("Delete "+p.name+"?")){set(K.p,get(K.p).filter(x=>x.id!==p.id));all();toast("Product deleted")}}));
-    $("pBody").append(r)});
+  const L=$("pList"),P=get("products");L.replaceChildren();$("pEmpty").hidden=P.length>0;
+  P.forEach(p=>{const c=h("div","card item"),i=h("div");
+    i.append(h("b","",p.name),h("p","mute",money(p.price)+" · "+T("In stock:")+" "+p.quantity));
+    const a=h("div","acts");
+    a.append(btn("Edit",()=>{editId=p.id;$("eName").value=p.name;$("ePrice").value=p.price;$("eQty").value=p.quantity;$("dlg").showModal()}),
+      btn("Delete",()=>{if(confirm(T("Delete this?"))){set("products",get("products").filter(x=>x.id!==p.id));all();toast("Product deleted")}},"del"));
+    c.append(i,a);L.append(c)});
 }
-$("pForm").onsubmit=e=>{e.preventDefault();const P=get(K.p);P.push({id:crypto.randomUUID(),name:$("pName").value.trim(),price:+$("pPrice").value,quantity:+$("pQty").value});set(K.p,P);e.target.reset();all();toast("Product added")};
-$("eForm").onsubmit=()=>{const P=get(K.p),p=P.find(x=>x.id===editId);if(p){p.name=$("eName").value.trim();p.price=+$("ePrice").value;p.quantity=+$("eQty").value;set(K.p,P);all();toast("Product updated")}};
+$("pForm").onsubmit=e=>{e.preventDefault();const P=get("products");P.push({id:crypto.randomUUID(),name:$("pName").value.trim(),price:+$("pPrice").value,quantity:+$("pQty").value});set("products",P);e.target.reset();all();toast("Product added")};
+$("eForm").onsubmit=()=>{const P=get("products"),p=P.find(x=>x.id===editId);if(p){p.name=$("eName").value.trim();p.price=+$("ePrice").value;p.quantity=+$("eQty").value;set("products",P);all();toast("Product updated")}};
 $("eCancel").onclick=()=>$("dlg").close();
-$("pSearch").oninput=renderP;
-$("pCsv").onclick=()=>csv("products",[["Name","Price","Stock"],...get(K.p).map(p=>[p.name,p.price,p.quantity])]);
 
-// Customers
-function renderC(){
-  const all_=get(K.c),C=all_.filter(c=>match($("cSearch").value,c.name,c.email,c.phone));$("cBody").replaceChildren();$("cEmpty").hidden=!!C.length;
-  C.forEach(c=>{const r=document.createElement("tr");td(r,c.name);td(r,c.email);td(r,c.phone);td(r,"").append(btn("Delete","del",()=>{
-    if(get(K.o).some(o=>o.customerId===c.id&&o.status!=="Cancelled"))return toast("This customer has active orders. Cancel them first.",1);
-    if(confirm("Delete "+c.name+"?")){set(K.c,get(K.c).filter(x=>x.id!==c.id));all();toast("Customer deleted")}}));$("cBody").append(r)});
-}
-$("cForm").onsubmit=e=>{e.preventDefault();const C=get(K.c),m=$("cEmail").value.trim().toLowerCase();if(C.some(c=>c.email===m))return toast("This customer email already exists.",1);
-  C.push({id:crypto.randomUUID(),name:$("cName").value.trim(),email:m,phone:$("cPhone").value.trim()});set(K.c,C);e.target.reset();all();toast("Customer added")};
-$("cSearch").oninput=renderC;
-$("cCsv").onclick=()=>csv("customers",[["Name","Email","Phone"],...get(K.c).map(c=>[c.name,c.email,c.phone])]);
-
-// Orders
-function opts(){
-  const cv=$("oCust").value,pv=$("oProd").value;
-  const fill=(s,ph,list,txt)=>{s.replaceChildren(new Option(ph,""));list.forEach(x=>s.append(new Option(txt(x),x.id)))};
-  fill($("oCust"),"Choose customer",get(K.c),c=>c.name);
-  fill($("oProd"),"Choose product",get(K.p),p=>p.name+" - "+money(p.price)+" (stock "+p.quantity+")");
-  $("oCust").value=cv;$("oProd").value=pv;
-}
+const LABEL={Pending:"New",Processing:"Preparing",Completed:"Done",Cancelled:"Cancelled"};
 function renderO(){
-  const O=get(K.o).filter(o=>match($("oSearch").value,o.customerName,o.productName,o.status));$("oBody").replaceChildren();$("oEmpty").hidden=!!O.length;
-  O.slice().reverse().forEach(o=>{const r=document.createElement("tr");td(r,o.source==="online"?o.customerName+" 🌐 "+o.phone+(o.address?" · "+o.address:""):o.customerName);td(r,o.productName);td(r,o.quantity);td(r,money(o.total));
-    const sc=td(r,""),sel=document.createElement("select");sel.style.minWidth="120px";sel.setAttribute("aria-label","Order status");
-    ["Pending","Processing","Completed","Cancelled"].forEach(s=>sel.append(new Option(s,s)));sel.value=o.status;sel.onchange=()=>setStatus(o.id,sel.value);sc.append(sel);
-    td(r,"").append(btn("Delete","del",()=>delOrder(o.id)));$("oBody").append(r)});
+  const L=$("oList"),O=get("orders").slice().reverse();L.replaceChildren();$("oEmpty").hidden=O.length>0;
+  O.forEach(o=>{const c=h("div","card"),r=h("div","row");
+    r.append(h("b","",o.customerName+(o.source==="online"?" 🌐":"")),h("b","",money(o.total)));
+    c.append(r,h("p","mute",o.quantity+" × "+o.productName));
+    if(o.phone)c.append(h("p","mute","📞 "+o.phone+(o.address?" · "+o.address:"")));
+    const s=h("select","st "+o.status);Object.keys(LABEL).forEach(k=>s.append(new Option(LABEL[k],k)));s.value=o.status;s.onchange=()=>setStatus(o.id,s.value);
+    const a=h("div","acts");a.style.marginTop="10px";a.append(btn("Delete",()=>delOrder(o.id),"del"));
+    c.append(s,a);L.append(c)});
 }
-function adjust(pid,d){const P=get(K.p),p=P.find(x=>x.id===pid);if(p){p.quantity+=d;set(K.p,P)}}
-$("oForm").onsubmit=e=>{e.preventDefault();const P=get(K.p),c=get(K.c).find(x=>x.id===$("oCust").value),p=P.find(x=>x.id===$("oProd").value),q=+$("oQty").value;
-  if(!c||!p)return toast("Choose a customer and a product.",1);if(!Number.isInteger(q)||q<1)return toast("Enter a valid quantity.",1);
+function opts(){const s=$("oProd"),v=s.value;s.replaceChildren(new Option(T("Choose a product"),""));get("products").forEach(p=>s.append(new Option(p.name+" · "+money(p.price),p.id)));s.value=v}
+function renderC(){
+  const L=$("cList"),C=get("customers");L.replaceChildren();$("cEmpty").hidden=C.length>0;
+  C.forEach(c=>{const k=h("div","card item"),i=h("div");i.append(h("b","",c.name),h("p","mute",c.phone||""));
+    k.append(i,btn("Delete",()=>{
+      if(get("orders").some(o=>o.customerId===c.id&&o.status!=="Cancelled"))return toast("This customer has active orders. Cancel them first.",1);
+      if(confirm(T("Delete this?"))){set("customers",get("customers").filter(x=>x.id!==c.id));all();toast("Customer deleted")}},"del"));L.append(k)});
+}
+function adjust(pid,d){const P=get("products"),p=P.find(x=>x.id===pid);if(p){p.quantity+=d;set("products",P)}}
+$("oForm").onsubmit=e=>{e.preventDefault();const P=get("products"),p=P.find(x=>x.id===$("oProd").value),q=+$("oQty").value,nm=$("oName").value.trim();
+  if(!p||!nm)return toast("Choose a product and enter a name.",1);
+  if(!Number.isInteger(q)||q<1)return toast("Enter a valid quantity.",1);
   if(q>p.quantity)return toast("Only "+p.quantity+" in stock.",1);
-  p.quantity-=q;set(K.p,P);const O=get(K.o);O.push({id:crypto.randomUUID(),customerId:c.id,customerName:c.name,productId:p.id,productName:p.name,quantity:q,total:Math.round(p.price*q*100)/100,status:"Pending",createdAt:new Date().toISOString()});
-  set(K.o,O);e.target.reset();all();toast("Order created")};
-function setStatus(id,s){const O=get(K.o),o=O.find(x=>x.id===id);if(!o)return;
+  const C=get("customers");let c=C.find(k=>k.name===nm);if(!c){c={id:crypto.randomUUID(),name:nm,phone:"",email:""};C.push(c);set("customers",C)}
+  p.quantity-=q;set("products",P);const O=get("orders");
+  O.push({id:crypto.randomUUID(),customerId:c.id,customerName:nm,productId:p.id,productName:p.name,quantity:q,total:Math.round(p.price*q*100)/100,status:"Pending",createdAt:new Date().toISOString()});
+  set("orders",O);e.target.reset();all();toast("Order created")};
+function setStatus(id,s){const O=get("orders"),o=O.find(x=>x.id===id);if(!o)return;
   if(o.status!=="Cancelled"&&s==="Cancelled")adjust(o.productId,o.quantity);
-  if(o.status==="Cancelled"&&s!=="Cancelled"){const p=get(K.p).find(x=>x.id===o.productId);if(!p||p.quantity<o.quantity){toast("Not enough stock to reactivate.",1);return all()}adjust(o.productId,-o.quantity)}
-  o.status=s;set(K.o,O);all();toast("Status: "+s)}
-function delOrder(id){if(!confirm("Delete this order?"))return;const O=get(K.o),o=O.find(x=>x.id===id);if(o&&o.status!=="Cancelled")adjust(o.productId,o.quantity);set(K.o,O.filter(x=>x.id!==id));all();toast("Order deleted")}
-$("oSearch").oninput=renderO;
-$("oCsv").onclick=()=>csv("orders",[["Customer","Product","Qty","Total","Status","Date"],...get(K.o).map(o=>[o.customerName,o.productName,o.quantity,o.total,o.status,o.createdAt])]);
+  if(o.status==="Cancelled"&&s!=="Cancelled"){const p=get("products").find(x=>x.id===o.productId);if(!p||p.quantity<o.quantity){toast("Not enough stock to reactivate.",1);return all()}adjust(o.productId,-o.quantity)}
+  o.status=s;set("orders",O);all()}
+function delOrder(id){if(!confirm(T("Delete this?")))return;const O=get("orders"),o=O.find(x=>x.id===id);if(o&&o.status!=="Cancelled")adjust(o.productId,o.quantity);set("orders",O.filter(x=>x.id!==id));all();toast("Order deleted")}
 
-function all(){renderP();renderC();opts();renderO();stats()}
-function publishMenu(){setDoc(doc(db,"menus",user.uid),{businessName:prof.businessName||"",businessType:prof.businessType||"",items:get(K.p).filter(p=>p.quantity>0).map(p=>({id:p.id,name:p.name,price:p.price,quantity:p.quantity})),updatedAt:Date.now()}).catch(()=>{})}
+function publishMenu(){setDoc(doc(db,"menus",user.uid),{businessName:prof.businessName||"",businessType:prof.businessType||"",items:get("products").filter(p=>p.quantity>0).map(p=>({id:p.id,name:p.name,price:p.price,quantity:p.quantity})),updatedAt:Date.now()}).catch(()=>{})}
 const link=new URL("menu.html?b="+user.uid,location.href).href;
-$("menuLink").value=link;
+$("open").href=link;
 $("qr").src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data="+encodeURIComponent(link);
-$("copyMenu").onclick=()=>navigator.clipboard.writeText(link).then(()=>toast("Link copied"),()=>toast("Copy it manually.",1));
+$("wa").onclick=()=>window.open("https://wa.me/?text="+encodeURIComponent((prof.businessName||"")+" - "+T("Order from us here:")+" "+link),"_blank");
+$("copy").onclick=()=>navigator.clipboard.writeText(link).then(()=>toast("Link copied"),()=>toast("Copy it manually.",1));
+
+function all(){renderH();renderP();opts();renderO();renderC()}
 all();publishMenu();
 onSnapshot(collection(db,"menus",user.uid,"inbox"),snap=>{
  let n=0;
  snap.docChanges().forEach(ch=>{
   if(ch.type!=="added")return;
-  const id=ch.doc.id,x=ch.doc.data(),O=get(K.o);
+  const id=ch.doc.id,x=ch.doc.data(),O=get("orders");
   if(!O.some(o=>o.inboxId===id)){
-   const C=get(K.c);let c=C.find(k=>k.phone===x.phone);
-   if(!c){c={id:crypto.randomUUID(),name:x.name,email:"",phone:x.phone};C.push(c);set(K.c,C)}
-   const P=get(K.p);
+   const C=get("customers");let c=C.find(k=>k.phone===x.phone);
+   if(!c){c={id:crypto.randomUUID(),name:x.name,email:"",phone:x.phone};C.push(c);set("customers",C)}
+   const P=get("products");
    (x.items||[]).forEach(it=>{const p=P.find(q=>q.id===it.id),q=Math.floor(Number(it.qty));if(!p||!(q>=1))return;const ok=p.quantity>=q;if(ok)p.quantity-=q;
     O.push({id:crypto.randomUUID(),customerId:c.id,customerName:x.name,productId:p.id,productName:p.name,quantity:q,total:Math.round(p.price*q*100)/100,status:ok?"Pending":"Cancelled",createdAt:new Date().toISOString(),source:"online",inboxId:id,phone:x.phone,address:x.address||""});n++});
-   set(K.p,P);set(K.o,O);
+   set("products",P);set("orders",O);
   }
   deleteDoc(ch.doc.ref).catch(()=>{});
  });
