@@ -90,7 +90,7 @@ function node(n){
 function start(){
   const b=document.createElement("button");
   b.type="button";b.textContent=AR?"English":"عربي";b.setAttribute("aria-label","Language");
-  b.style.cssText="position:fixed;top:10px;inset-inline-end:10px;z-index:99;padding:7px 14px;border-radius:20px;border:1px solid #38bdf8;background:#080d1bcc;color:#fff;font:600 13px system-ui;cursor:pointer;width:auto;height:auto;margin:0";
+  b.style.cssText="position:fixed;top:10px;inset-inline-end:10px;z-index:99;padding:7px 14px;border-radius:20px;border:2px solid #231F45;background:#FFC93C;color:#231F45;box-shadow:3px 3px 0 #231F45;font:600 13px system-ui;cursor:pointer;width:auto;height:auto;margin:0";
   b.onclick=()=>{localStorage.setItem("sbLang",AR?"en":"ar");location.reload()};
   document.body.append(b);
   if(!AR)return;

@@ -3,45 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#080d1b">
+<meta name="theme-color" content="#FFF8EC">
 <title>Smart Business</title>
-<style>
-:root{--bg:#080d1b;--panel:#111b31;--line:#263754;--p:#38bdf8;--ok:#34d399;--warn:#fbbf24;--bad:#f87171;--mute:#94a3b8}
-*{box-sizing:border-box;margin:0;padding:0}
-body{font:17px/1.5 system-ui,Segoe UI,Arial,sans-serif;background:var(--bg);color:#f1f5f9;padding:64px 16px 96px;max-width:720px;margin:auto}
-h1{font-size:24px;margin-bottom:16px}h2{font-size:19px;margin-bottom:10px}
-.mute{color:var(--mute);font-size:15px}
-.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px;margin-bottom:14px}
-.top{position:fixed;top:0;inset-inline:0;background:#080d1bf2;border-bottom:1px solid var(--line);padding:12px 16px;display:flex;justify-content:space-between;align-items:center;z-index:5}
-.top b{color:var(--p);max-width:45%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.out{background:none;border:0;color:var(--mute);font:inherit;font-size:14px;cursor:pointer;margin-inline-end:78px}
-.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
-.stat{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px;text-align:center}
-.stat small{color:var(--mute);font-size:13px;display:block}.stat b{font-size:20px}
-.btn{display:block;width:100%;min-height:50px;border-radius:12px;border:0;background:linear-gradient(90deg,#2563eb,#9333ea);color:#fff;font-weight:700;font-size:17px;font-family:inherit;cursor:pointer;margin-top:10px;text-align:center;text-decoration:none;padding:13px}
-.btn.wa{background:#16a34a}.btn.ghost{background:none;border:1px solid var(--line);font-weight:600}
-.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-input,select{width:100%;min-height:48px;background:var(--bg);color:#fff;border:1px solid var(--line);border-radius:12px;padding:12px;font:inherit;margin-top:10px}
-:focus-visible{outline:2px solid var(--p);outline-offset:2px}
-.item{display:flex;justify-content:space-between;align-items:center;gap:10px}
-.acts{display:flex;gap:6px}
-.sm{min-height:40px;padding:0 14px;border-radius:10px;border:1px solid var(--line);background:none;color:#fff;font:inherit;font-size:15px;cursor:pointer}
-.sm.del{color:var(--bad);border-color:#7f1d1d}
-.row{display:flex;justify-content:space-between;gap:10px}
-select.st{font-weight:700}.st.Pending{color:var(--warn)}.st.Processing{color:var(--p)}.st.Completed{color:var(--ok)}.st.Cancelled{color:var(--bad)}
-details summary{cursor:pointer;font-weight:700;min-height:44px;display:flex;align-items:center}
-ol{padding-inline-start:22px;margin-bottom:6px}li{margin:6px 0}
-#qr{display:block;margin:14px auto 0;border-radius:10px;background:#fff;padding:6px}
-.bar{position:fixed;bottom:0;inset-inline:0;background:#0a1224;border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(4,1fr);z-index:5}
-.bar button{background:none;border:0;color:var(--mute);font-weight:600;font-size:13px;font-family:inherit;padding:10px 0 12px;cursor:pointer}
-.bar button i{display:block;font-style:normal;font-size:22px}.bar button.on{color:var(--p)}
-#toasts{position:fixed;bottom:84px;inset-inline:16px;display:grid;gap:8px;z-index:9}
-.toast{background:#0f172a;border:1px solid var(--line);border-inline-start:4px solid var(--ok);padding:12px 16px;border-radius:10px}
-.toast.err{border-inline-start-color:var(--bad)}
-dialog{background:var(--panel);color:#fff;border:1px solid var(--line);border-radius:16px;padding:20px;width:min(380px,92vw);margin:auto}
-dialog::backdrop{background:#000a}
-[hidden]{display:none!important}
-</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="app.css">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon-192.png">
 </head>
