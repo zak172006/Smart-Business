@@ -74,6 +74,7 @@ dialog label{display:block;margin:12px 0 4px;color:var(--mute);font-size:13px}
     <div class="stat"><small>Customers</small><b id="sCust">0</b></div>
     <div class="stat"><small>Products</small><b id="sProd">0</b></div>
   </div>
+  <div class="box"><h2>Your online menu</h2><p class="sub" style="margin-bottom:12px">Share this link or QR code. Customers order without an account, and their orders appear in Orders.</p><div class="tools"><input id="menuLink" readonly aria-label="Menu link"><button class="btn" id="copyMenu" type="button">Copy link</button></div><img id="qr" alt="QR code for your menu" width="160" height="160" style="margin-top:8px;border-radius:8px;background:#fff;padding:6px"></div>
   <div class="two">
     <div class="box"><h2>Sales, last 7 days</h2><div class="bars" id="chart"></div></div>
     <div class="box"><h2>Low stock</h2><div id="lowList"></div></div>
@@ -126,7 +127,7 @@ dialog label{display:block;margin:12px 0 4px;color:var(--mute);font-size:13px}
 </form></dialog>
 
 <script type="module">
-import { auth, db, onAuthStateChanged, signOut, doc, getDoc, setDoc } from "./firebase.js";
+import { auth, db, onAuthStateChanged, signOut, doc, getDoc, setDoc, collection, onSnapshot, deleteDoc } from "./firebase.js";
 const $=id=>document.getElementById(id);
 const user=await new Promise(r=>onAuthStateChanged(auth,u=>r(u)));
 if(!user){location.replace("login.html");throw new Error("not signed in")}
@@ -134,7 +135,7 @@ const ref=doc(db,"users",user.uid);
 const D=(await getDoc(ref)).data()||{};
 const K={p:"products",c:"customers",o:"orders"};
 const get=k=>D[k]||[];
-const set=(k,v)=>{D[k]=v;setDoc(ref,{[k]:v},{merge:true}).catch(()=>toast("Could not save. Check your connection.",1))};
+const set=(k,v)=>{D[k]=v;setDoc(ref,{[k]:v},{merge:true}).catch(()=>toast("Could not save. Check your connection.",1));if(k==="products")publishMenu()};
 const money=n=>(Math.round(n*100)/100).toLocaleString("en",{minimumFractionDigits:2,maximumFractionDigits:2})+" EGP";
 const TYPES={restaurant:"Restaurant",clothing:"Clothing Store",electronics:"Electronics Store",supermarket:"Supermarket",other:"Other Business"};
 const prof=D.profile||{};
@@ -205,7 +206,7 @@ function opts(){
 }
 function renderO(){
   const O=get(K.o).filter(o=>match($("oSearch").value,o.customerName,o.productName,o.status));$("oBody").replaceChildren();$("oEmpty").hidden=!!O.length;
-  O.slice().reverse().forEach(o=>{const r=document.createElement("tr");td(r,o.customerName);td(r,o.productName);td(r,o.quantity);td(r,money(o.total));
+  O.slice().reverse().forEach(o=>{const r=document.createElement("tr");td(r,o.source==="online"?o.customerName+" 🌐 "+o.phone+(o.address?" · "+o.address:""):o.customerName);td(r,o.productName);td(r,o.quantity);td(r,money(o.total));
     const sc=td(r,""),sel=document.createElement("select");sel.style.minWidth="120px";sel.setAttribute("aria-label","Order status");
     ["Pending","Processing","Completed","Cancelled"].forEach(s=>sel.append(new Option(s,s)));sel.value=o.status;sel.onchange=()=>setStatus(o.id,sel.value);sc.append(sel);
     td(r,"").append(btn("Delete","del",()=>delOrder(o.id)));$("oBody").append(r)});
@@ -225,7 +226,29 @@ $("oSearch").oninput=renderO;
 $("oCsv").onclick=()=>csv("orders",[["Customer","Product","Qty","Total","Status","Date"],...get(K.o).map(o=>[o.customerName,o.productName,o.quantity,o.total,o.status,o.createdAt])]);
 
 function all(){renderP();renderC();opts();renderO();stats()}
-if(user)all();
+function publishMenu(){setDoc(doc(db,"menus",user.uid),{businessName:prof.businessName||"",businessType:prof.businessType||"",items:get(K.p).filter(p=>p.quantity>0).map(p=>({id:p.id,name:p.name,price:p.price,quantity:p.quantity})),updatedAt:Date.now()}).catch(()=>{})}
+const link=new URL("menu.html?b="+user.uid,location.href).href;
+$("menuLink").value=link;
+$("qr").src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data="+encodeURIComponent(link);
+$("copyMenu").onclick=()=>navigator.clipboard.writeText(link).then(()=>toast("Link copied"),()=>toast("Copy it manually.",1));
+all();publishMenu();
+onSnapshot(collection(db,"menus",user.uid,"inbox"),snap=>{
+ let n=0;
+ snap.docChanges().forEach(ch=>{
+  if(ch.type!=="added")return;
+  const id=ch.doc.id,x=ch.doc.data(),O=get(K.o);
+  if(!O.some(o=>o.inboxId===id)){
+   const C=get(K.c);let c=C.find(k=>k.phone===x.phone);
+   if(!c){c={id:crypto.randomUUID(),name:x.name,email:"",phone:x.phone};C.push(c);set(K.c,C)}
+   const P=get(K.p);
+   (x.items||[]).forEach(it=>{const p=P.find(q=>q.id===it.id),q=Math.floor(Number(it.qty));if(!p||!(q>=1))return;const ok=p.quantity>=q;if(ok)p.quantity-=q;
+    O.push({id:crypto.randomUUID(),customerId:c.id,customerName:x.name,productId:p.id,productName:p.name,quantity:q,total:Math.round(p.price*q*100)/100,status:ok?"Pending":"Cancelled",createdAt:new Date().toISOString(),source:"online",inboxId:id,phone:x.phone,address:x.address||""});n++});
+   set(K.p,P);set(K.o,O);
+  }
+  deleteDoc(ch.doc.ref).catch(()=>{});
+ });
+ if(n){all();toast(n+" new online order"+(n>1?"s":""))}
+});
 </script>
 </body>
 </html>

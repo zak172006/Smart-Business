@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#080d1b">
+<title>Order online</title>
+<style>
+:root{--bg:#080d1b;--panel:#111b31;--line:#263754;--p:#38bdf8;--ok:#34d399;--bad:#f87171;--mute:#94a3b8}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font:16px/1.5 system-ui,Segoe UI,Arial,sans-serif;background:var(--bg);color:#f1f5f9;padding:20px;max-width:640px;margin:auto}
+h1{font-size:26px}h2{font-size:18px;margin-bottom:12px}
+.sub{color:var(--mute);margin-bottom:20px}
+.item{display:flex;align-items:center;gap:12px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:10px}
+.item div{flex:1}.item small{color:var(--mute)}
+.qty{display:flex;align-items:center;gap:10px}
+.qty b{min-width:20px;text-align:center}
+button{font:inherit;cursor:pointer;border-radius:8px;border:1px solid var(--line);background:none;color:#fff;width:38px;height:38px}
+button.add{width:auto;padding:0 16px;background:linear-gradient(90deg,#2563eb,#9333ea);border:0;font-weight:600}
+button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid var(--p);outline-offset:2px}
+.box{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px;margin:22px 0}
+.line{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--line)}
+input,textarea{width:100%;background:var(--bg);color:#fff;border:1px solid var(--line);border-radius:8px;padding:12px;font:inherit;margin-top:10px}
+.send{width:100%;height:48px;margin-top:14px;background:linear-gradient(90deg,#2563eb,#9333ea);border:0;font-weight:700}
+.msg{padding:14px;border-radius:10px;margin-top:14px}
+.msg.ok{border:1px solid var(--ok);color:var(--ok)}.msg.err{border:1px solid var(--bad);color:var(--bad)}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<h1 id="bn">Menu</h1>
+<p class="sub" id="bt">Loading menu…</p>
+<div id="list"></div>
+
+<section class="box" id="cartBox" hidden>
+  <h2>Your order</h2>
+  <div id="cart"></div>
+  <p class="line"><b>Total</b><b id="tot"></b></p>
+  <form id="f">
+    <input id="name" placeholder="Your name" maxlength="60" required>
+    <input id="phone" type="tel" placeholder="Phone number" maxlength="20" required>
+    <input id="addr" placeholder="Delivery address" maxlength="200" required>
+    <textarea id="note" placeholder="Notes (optional)" maxlength="200" rows="2"></textarea>
+    <button class="send" id="sendBtn">Send order · pay cash on delivery</button>
+  </form>
+</section>
+<div id="msg" role="status"></div>
+
+<script type="module">
+import { db, doc, getDoc, collection, addDoc } from "./firebase.js";
+const $=id=>document.getElementById(id);
+const b=new URLSearchParams(location.search).get("b");
+const money=n=>(Math.round(n*100)/100).toFixed(2)+" EGP";
+const cart={};let items=[];
+function say(t,c){$("msg").className="msg "+c;$("msg").textContent=t}
+function row(name,right){const l=document.createElement("p");l.className="line";const a=document.createElement("span");a.textContent=name;const r=document.createElement("span");r.textContent=right;l.append(a,r);return l}
+function render(){
+  $("list").replaceChildren();
+  items.forEach(p=>{
+    const d=document.createElement("div");d.className="item";
+    const t=document.createElement("div");const n=document.createElement("b");n.textContent=p.name;const s=document.createElement("small");s.textContent=money(p.price);t.append(n,document.createElement("br"),s);
+    const q=document.createElement("div");q.className="qty";
+    const c=cart[p.id]||0;
+    if(c){
+      const m=document.createElement("button");m.textContent="−";m.setAttribute("aria-label","Remove one "+p.name);m.onclick=()=>{cart[p.id]--;if(!cart[p.id])delete cart[p.id];render()};
+      const v=document.createElement("b");v.textContent=c;
+      const a=document.createElement("button");a.textContent="+";a.setAttribute("aria-label","Add one "+p.name);a.disabled=c>=p.quantity;a.onclick=()=>{cart[p.id]++;render()};
+      q.append(m,v,a);
+    }else{
+      const a=document.createElement("button");a.className="add";a.textContent="Add";a.onclick=()=>{cart[p.id]=1;render()};q.append(a);
+    }
+    d.append(t,q);$("list").append(d);
+  });
+  const ids=Object.keys(cart);$("cartBox").hidden=!ids.length;$("cart").replaceChildren();
+  let tot=0;ids.forEach(id=>{const p=items.find(x=>x.id===id);tot+=p.price*cart[id];$("cart").append(row(cart[id]+" × "+p.name,money(p.price*cart[id])))});
+  $("tot").textContent=money(tot);
+}
+try{
+  const snap=b?await getDoc(doc(db,"menus",b)):null;
+  if(!snap||!snap.exists())throw 0;
+  const m=snap.data();items=m.items||[];
+  $("bn").textContent=m.businessName||"Menu";document.title=(m.businessName||"Menu")+" · Order online";
+  $("bt").textContent=items.length?"Choose what you like and send your order.":"Nothing is available right now. Please check back soon.";
+  render();
+}catch(e){$("bt").textContent="This menu link is not valid.";}
+
+$("f").onsubmit=async e=>{
+  e.preventDefault();
+  const list=Object.keys(cart).map(id=>({id,qty:cart[id]}));
+  if(!list.length)return say("Add at least one item.","err");
+  $("sendBtn").disabled=true;
+  try{
+    await addDoc(collection(db,"menus",b,"inbox"),{name:$("name").value.trim(),phone:$("phone").value.trim(),address:$("addr").value.trim(),note:$("note").value.trim(),items:list,createdAt:Date.now()});
+    for(const k in cart)delete cart[k];render();$("f").reset();
+    say("Order sent. The shop will contact you on your phone soon.","ok");
+  }catch(err){say("Could not send the order. Check your connection and try again.","err")}
+  $("sendBtn").disabled=false;
+};
+</script>
+</body>
+</html>
