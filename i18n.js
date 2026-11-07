@@ -103,3 +103,4 @@ function start(){
 }
 document.readyState==="loading"?document.addEventListener("DOMContentLoaded",start):start();
 })();
+if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js").catch(()=>{});
